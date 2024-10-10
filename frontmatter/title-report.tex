@@ -1,0 +1,79 @@
+\begin{titlepage}
+
+\begin{center}
+
+%% Print the title
+{\makeatletter
+\largetitlestyle\fontsize{35}{45}\selectfont\@title
+\makeatother}
+
+%% Print the subtitle
+{\makeatletter
+\ifdefvoid{\@subtitle}{}{\bigskip\titlestyle\fontsize{20}{20}\selectfont\@subtitle}
+\makeatother}
+
+\bigskip
+\bigskip
+
+by
+
+\bigskip
+\bigskip
+
+%% Print the name of the author
+{\makeatletter
+\largetitlestyle\fontsize{25}{25}\selectfont\@author
+\makeatother}
+
+\bigskip
+\bigskip
+
+to obtain the degree of Master of Science in Civil Engineering
+%ter verkrijging van de graad van Master of Science
+
+at the Delft University of Technology,
+%aan de Technische Universiteit Delft,
+
+to be defended publicly on September 30, 2024 at 3:00 PM.
+%in het openbaar de verdedigen op maandag 1 januari om 10:00 uur.
+
+
+
+%% Print table with names and student numbers
+%\setlength\extrarowheight{2pt}
+%\begin{tabular}{lc}
+   % Sijie Zeng & 5377846 \\\midrule
+    %Sijie & 1234567 \\
+%\end{tabular}
+
+\vfill
+
+%% Print some more information at the bottom
+
+\begin{center}
+    
+
+\begin{tabular}{lll}
+Student Number:   & 5377846                   &                                                      \\
+Project Duration: & July, 2023 - September, 2024   &                                                      \\
+Thesis Committee: & Dr.ir. A. (Andreas) Hegyi & CiTG, TU Delft, chair, daily supervisor              \\
+                  & Dr.ir. H. (Henk) Taale    & CiTG, TU Delft, senior consultant at Rijkswaterstaat \\
+                  & Dr. Y. (Yufei) Yuan       & CiTG, TU Delft                                      
+\end{tabular}
+\end{center}
+\bigskip
+\bigskip
+
+%% Add a source and description for the cover and optional attribution for the template
+
+
+\end{center}
+
+%% Insert the TU Delft logo at the bottom of the page
+\begin{tikzpicture}[remember picture, overlay]
+    \node[above=10mm] at (current page.south) {%
+        \includegraphics{figures/logo-black}
+    };
+\end{tikzpicture}
+
+\end{titlepage}

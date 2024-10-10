@@ -1,0 +1,537 @@
+\chapter{Literature Review}
+\label{chapter:Literature Review}
+Building on the general introduction provided in Chapter \ref{chapter:introduction}, this chapter serves as a critical foundation for the thesis. It reviews existing state estimation methods, and elucidates their strengths and weaknesses, to set the theoretical and conceptual groundwork for the proposed Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE). It identifies aspects of these methodologies that align with the proposed estimator in the current thesis, highlighting where the current thesis diverges and articulates the unique contributions. This section specifies the core areas of focus, outlining the rationale behind the inclusion or exclusion of certain literature. It explains the necessity of reviewing specific works and justifies the decision to omit others, ensuring a directed and purposeful exploration of relevant research that underpins the foundation of this thesis. The insights garnered here not only inform the design principles of the PF-SIQE but also pave the way for the detailed methodological development discussed in the next chapter. 
+
+
+\section{Introduction}
+The objective of the PF-SIQE is to estimate the queue length as accurately as possible, even in the presence of system noise and noisy sensor measurements. Then give a well-performed estimation of the system state. In Section \ref{Queue Estimation-LR}, the literature review of existing real-time queue estimation methods not only highlights the research gap and the novelty of the proposed PF-SIQE but also identifies valuable elements from the existing literature. It gathers theories, arguments, and approaches that have proven effective, providing insights into which elements could be adapted or extended to benefit the proposed research. This comprehensive review ensures a solid theoretical foundation, allowing us to leverage previous findings while addressing the gaps identified.
+
+The proposed PF-SIQE consists of three main modules:
+\begin{itemize}
+    \item The state transition function module: generates the state at $k$ based on the state at $k-1$, and gives the probability distribution function.
+    \item The measurement function module: generates the measurements and gives the probability distribution function.
+    \item The particle filter module.
+\end{itemize}
+All the modules are input as independent components within the versatile PF-SIQE framework, which allows for flexible replacement and integration.
+
+In the state transition function module of this study, the focus is on simulating the vehicle state at time step $k$ based on its state at $k-1$. The precision of state prediction hinges on the design of the state transition function. This thesis incorporates car-following models and traffic signal status to elucidate the longitudinal movement of vehicles. The exploration of lateral movements through lane-changing models remains an avenue for future investigation. Given that car-following models serve as a flexible component within the state transition framework, implementing a literature review on different car-following models is not the primary aim of this work. Consequently, an exhaustive review of various car-following and acceleration/deceleration models is omitted from the literature review section, aligning the focus more on the application and flexibility of the model within the context of the PF-SIQE.
+
+Given that the PF-SIQE aims to estimate the queue as accurately as possible despite the noisy system and measurements, and considering the absence of fully accurate real-life data from loop detectors, measurement generation is conducted through the measurement function module. Understanding the noise distribution in loop detector outputs is crucial. In Section \ref{detection technologies}, our examination will center on loop detectors alongside other detection methods, and study their key attributes. This includes an exploration of the types of output measurements these detectors capture, the origins of measurement noise, and the distribution of such noise. The methodology for deducing the measurement noise distribution will be outlined in Chapter \ref{chapter: Development of a Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE)}.
+
+In the upcoming Section \ref{Queue Estimation-LR}, Tables \ref{LR1} and \ref{LR2} present a comprehensive overview of the traditional methods of queue estimation and their evolution, categorizing them by key features such as the queue definition, time scale, data sources, estimation algorithms, and uncertainties. These categories were chosen for several reasons. First, the queue definition varies across the literature, with some studies estimating the maximum queue length within a cycle, which is crucial for assessing traffic signal performance and optimizing signal parameters, such as cycle length. Others focus on the position of the last vehicle (queue tail), and some estimate the number of vehicles. Including this category helps to understand these different approaches. Second, the time scale for queue estimation can either be cycle-by-cycle or second-by-second. Much of the previous research employed a cycle-by-cycle time scale. However, recent studies, including my thesis, focus on a higher time resolution of second-by-second estimation. This category underscores the temporal shift in research focus and its pertinence to my study. Third, including the category of data sources allows for a comparison of the various types of data and sensors utilized in previous studies, which is highly relevant to the methodology of development of the proposed PF-SIQE in Chapter \ref{chapter: Development of a Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE)}. Fourth, estimation algorithms are a core category that provides insight into the methodologies employed in previous research and their performance. Understanding the various estimation algorithms helps to study classic algorithms, observe their evolution over time, and assess the strengths and weaknesses of each method. Lastly, how previous studies have addressed uncertainties, including system noise and measurement noise, is crucial for the robustness of estimation algorithms. This is particularly relevant to the proposed PF-SIQE, as its objective is to estimate queue length as accurately as possible, especially in the presence of system noise and noisy sensor measurements.
+
+Given the limited number of studies specifically addressing queue estimation with the particle filter, Table \ref{LR3} compiles research that focuses on traffic state estimation and vehicle-based localization using the particle filter. The chosen categories for this table include estimated variable, time scale, level, road type, data sources, estimation algorithms, and uncertainties. The estimated variable category clarifies which specific variable within the traffic state (i.e. speed, density, or flow) is being estimated. The level category distinguishes whether the estimation is macroscopic, mesoscopic, or microscopic(i.e. vehicle-based). The road type category specifies the type of environment studied, such as signalized intersections, freeways, or urban areas. This comprehensive categorization helps to better understand the application of particle filters in related fields and their relevance to queue estimation.
+
+Given the limited number of literature specifically addressing queue estimation with the particle filter, Table \ref{LR3} compiles studies that focus on traffic state estimation and vehicle-based localization utilizing the particle filter.
+
+Following this broader perspective, to align with the proposed PF-SIQE and maintain focus, particular emphasis is placed on literature that addresses the following critical aspects:
+
+\begin{itemize}
+    \item The vehicle-based estimation approach, incorporates microscopic traffic flow models such as car-following models, traffic signal acceleration/deceleration models, and lane change models.
+    \item High-resolution time scales on a per-second basis, aligning with the demands of real-time estimation.
+    \item An exploration of the effects of system noise and measurement noise, with a focus on how previous research has managed these issues, particularly measurement noise arising from different sensors.
+    \item The application of recursive Bayesian frameworks to queue estimation or traffic state estimation, with a special focus on the particle filter.
+\end{itemize}
+These focal points are integral to understanding the current state of queue estimation technology and formulating effective enhancements in line with the PF-SIQE.
+
+
+\newgeometry{landscape, left=1cm, right=1cm, top=1.5cm, bottom=1.5cm}
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize 
+\caption{Summary of Literature review on queue estimation \uppercase\expandafter{\romannumeral1}}
+\label{LR1}
+% 为各列分配不同的相对宽度
+\begin{tabularx}{\linewidth}{@{} l 
+>{\hsize=.7\hsize}X  % Literature
+>{\hsize=.35\hsize}X  % Queue Definition
+>{\hsize=1.2\hsize}X  % Time Scale
+>{\hsize=0.8\hsize}X % Data Source
+>{\hsize=1.2\hsize}X % Estimation Algorithm
+>{\hsize=1\hsize}X % Uncertainties
+@{}} 
+\toprule
+\textbf{Literature} & \textbf{Queue Definition} & \textbf{Time Scale} & \textbf{Data Source} & \textbf{Estimation Algorithm} & \textbf{Uncertainties} \\
+\midrule
+\textcite{sharma2007input} & maximum queue length & per cycle & roadside sensors: loop detectors & input-output model & discuss the placement of detector to enhance measurement accuracy, not intro noise \\
+\textcite{liu2009real} & maximum queue length & per cycle & roadside sensors: high resolution loop detector & shockwave theory + break point & not consider detection error \\
+\textcite{cheng2012exploratory} & maximum queue length & per cycle & probe trajectory & shockwave theory + critical point & not consider probe data noise \\
+\textcite{cai2014shock} & maximum queue length & per cycle & Multi: probe vehicle trajectory, upstream high resolution loop detector & shockwave theory + critical point & not consider probe data noise and loop detection error \\
+\textcite{lee2015real} & maximum queue length & per cycle & roadside sensors: loop detectors & input-output model + KF & count error, error caused by lane-change behaviour \\
+\textcite{wang2015cycle} & maximum queue length & per cycle & Multi: location, time of probe vehicle, loop detector & shockwave theory + critical point & assume deviation of data (location) less than 3 m \\
+\textcite{yin2018kalman} & maximum queue length & per cycle & mobile phone GPS: location, time step, vehicle ID & shockwave + KF & system noise $\sim$ zero-mean Gaussian distribution, measurement noise $\sim$ zero-mean Gaussian distribution \\
+\textcite{an2018real} & maximum queue length & per cycle & roadside sensors: high resolution video-based detector & input-output model & assume can avoid error by choosing time period from video \\
+\textcite{gao2019connected} & maximum queue length & per cycle & floating sensor: vehicle ID, location, queue time, speed of CV & shockwave + back propagation (BP) neural network & give function of back propagation of error \\
+\textcite{yao2019cycle} & maximum queue length & per cycle & roadside sensors: low resolution loop detector & shockwave theory & not include effects if data quality on estimation accuracy \\
+\textcite{abewickrema2023multivariate} & maximum queue length & per cycle & roadside sensors: high resolution loop detector & shockwave + KF + break point & process noise $\sim$ zero-mean multivariate normal distribution, measurement noise $\sim$ zero-mean Gaussian white noise \\
+\textcite{vigos2008real} & number of vehicles & per second & roadside sensors: loop detectors & input-output model + KF & system noise $\sim$ zero-mean white Gaussian random variables, measurement $\sim$ zero-mean white Gaussian random variables \\
+\textcite{vigos2010simplified} & number of vehicles & per second & roadside sensors: loop detectors & input-output model + KF & detailed analysis of system and measurement noise \\
+\textcite{hao2014cycle} & number of vehicles & per cycle & mobile sensor: sample travel times & bayesian network based method & not consider any noise \\
+\textcite{aljamal2020real} & number of vehicles & per second & floating sensor: location, speed of CV & AKF + AKFNN & dynamically estimate the mean and variance of state noise and measurement noise \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+
+\newpage
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize 
+\caption{Summary of Literature review on queue estimation \uppercase\expandafter{\romannumeral2}}
+\label{LR2}
+% 为各列分配不同的相对宽度
+\begin{tabularx}{\linewidth}{@{} l 
+>{\hsize=0.6\hsize}X  % Literature
+>{\hsize=.35\hsize}X  % Queue Definition
+>{\hsize=1.2\hsize}X  % Time Scale
+>{\hsize=.8\hsize}X % Data Source
+>{\hsize=1.3\hsize}X % Estimation Algorithm
+>{\hsize=1\hsize}X % Uncertainties
+@{}} 
+\toprule
+\textbf{Literature} & \textbf{Queue Definition} & \textbf{Time Scale} & \textbf{Data Source} & \textbf{Estimation Algorithm} & \textbf{Uncertainties} \\
+\midrule
+\textcite{aljamal2020real} & number of vehicles & dynamic & floating sensor: location, speed of CV, level of market penetration (LMP) & input-output model + hydrodynamic equation + KF & no discussion of system and measurement noise \\
+\textcite{wang2021kalman} & number of vehicles & per second & floating sensor: location, speed, acceleration of CV & input-output model + KF & state noise $\sim$ zero-mean multivariate normal distribution, measurement noise $\sim$ zero-mean Gaussian white noise \\
+\textcite{comert2021queue} & number of vehicles & per cycle & floating sensor: location, time of CV, whether there is a follower & analytical probabilistic model & assume lane level accuracy for CV locations \\
+\textcite{anusha2022dynamical} & number of vehicles & per cycle & roadside sensors: synchronized video cameras located at the entry and exit of intersection & input-output model + KF & model the mean and variance of process and measurement noise for different scenarios, including lane change \\
+\textcite{ferencz2023road} & Queue length & per cycle & Simulation data: speed, distance & Shockwave + AI based KF & Process noise $\sim$ zero-mean multivariate normal distribution, Measurement noise $\sim$ zero-mean Gaussian white noise \\
+\textcite{ban2011real} & Queue length & per cycle & Mobile sensor: sample travel times & Shockwave theory & No consideration of noise \\
+\textcite{cheng2011cycle} & Queue length & per cycle & Sampled floating sensor: location, speed, time of probe vehicle & Shockwave theory + critical point & Location, speed projection error \\
+\textcite{comert2013simple} & Queue length & per cycle & Floating sensor: location, time of probe vehicle & Analytical probabilistic model & No consideration of probe data noise \\
+\textcite{ramezani2015queue} & Queue length & per cycle & Floating sensor: location, speed of probe vehicle & Shockwave theory & Measurement noise $\sim$ zero-mean Gaussian distribution \\
+\textcite{yang2018queue} & Queue length & per cycle & Floating sensor: CV's trajectory points & Shockwave + convex optimization + critical point & Claims to handle measurement noise, no noise distribution \\
+\textcite{wang2020queue} & Queue length & per cycle & Floating sensor: location, speed of probe vehicle; onset of red & Shockwave + integer programming & No consideration of probe data noise \\
+\textcite{tan2020fuzing} & Queue length & per cycle & Multi: location, time of probe vehicle; license plate recognition: license plate number, time, vehicle type & Bayesian theory & Quality of LPR and probe data not considered \\
+\textcite{hu2022high} & Queue tail & per second & Floating sensor: location \& speed of CV, spacings \& speed of predecessor and follower & Shockwave + EKF & Measurement noise $\sim$ zero-mean Gaussian white noise \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize
+\caption{Summary of Literature Review on Traffic State Estimation with Particle filter \uppercase\expandafter{\romannumeral3}}
+\label{LR3}
+\begin{tabularx}{\linewidth}{@{} 
+>{\hsize=0.7\hsize}X  % Literature
+>{\hsize=0.6\hsize}X  % Estimated Variable
+>{\hsize=0.45\hsize}X  % Time Scale
+>{\hsize=0.45\hsize}X  % Level
+>{\hsize=0.5\hsize}X  % Road Type
+>{\hsize=1\hsize}X    % Data Source
+>{\hsize=1.2\hsize}X  % Estimation Algorithm
+>{\hsize=1.5\hsize}X    % Uncertainties
+@{}} 
+\toprule
+\textbf{Literature} & \textbf{Estimated Variable} & \textbf{Time Scale} & \textbf{Level} & \textbf{Road Type} & \textbf{Data Source} & \textbf{Estimation Algorithm} & \textbf{Uncertainties} \\
+\midrule
+\textcite{chen2011real} & speed profile & 5 min & macroscopic & freeway & roadside sensors: speed from loop detector per min & Van Aerde flow continuity model + PF & process, measurement noise, no distribution given \\
+\textcite{aljamal2020real} & number of vehicles & per second & macroscopic & signalized intersection & floating sensor: location, speed of CV, LMP & input-output model + hydrodynamic equation + PF & process, measurement noise distribution is not given \\
+\textcite{peker2011particle} & localization & per second & vehicle-based & urban & GPS and odometer of vehicle; digital map & PF with map topology & state faults, measurement error distribution is not given \\
+\textcite{mihaylova2007freeway} & density, speed & per second & macroscopic & freeway & roadside sensors at segments boundaries & a compositional stochastic model based on cell-transimission model + PF & missed count and false detection ~ Poisson random variables, speed noise ~ Gaussian distribution \\
+\textcite{fang2019road} & center location & per second & vehicle-based & urban & floating sensor: on-vehicle visual detection: center location & part-based PF & a small Gaussian noise is added during importance sampling \\
+\textcite{mihaylova2012parallelized} & flow, density, speed & 10-second & macroscopic & freeway & roadside sensors at segments boundaries & parallelized PF + parallelized Gaussian sum PF & state and measurement noise ~ Gaussian \\
+\textcite{xie2018generic} & vehicle trajectories, flow, density & per second & macroscopic, vehicle-based & signalized intersection & multi: loops, traffic control data, sparse travel time & a generic data assimilation framework, IDM + PF & count error ~ discrete probability distribution, system noise distribution is not given \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+\restoregeometry
+
+
+\section{Real-time Queue Estimation at Signalized Intersections}\label{Queue Estimation-LR}
+Queue estimation is an integral component of traffic state estimation, which itself is influenced by vehicle localization. Although there is limited literature specifically focused on real-time queue estimation using vehicle localization, the current thesis aims to tackle this issue. Queue estimation has been extensively researched for both freeways and signalized intersections. To emphasize the research gap between previous studies and this thesis, this Section narrows the scope to focus on queue estimation at signalized intersections.
+
+After a comprehensive literature review in this area, the summary of the literature on real-time signalized intersection queue estimation is shown in Tables \ref{LR1} and \ref{LR2}. It is revealed that research mainly concentrates on several critical aspects: 
+\begin{itemize}
+    \item the queue definition, i.e. the target output, and time scale for different purposes;
+    \item the methodologies and algorithms;
+    \item the detection technology, data source, and uncertainties.
+\end{itemize}
+Section \ref{Queue Estimation-LR} will be organized according to these aspects. Furthermore, to align with the objective of using the particle filter approach in this thesis, Table \ref{LR3} presents current studies that utilize the particle filter for vehicle localization and traffic state estimation. Although few studies focus on queue estimation using the particle filter, the existing works are still informative. Additionally, other relevant aspects, such as lane change behaviors, signal control types, and arrival patterns, will be discussed in the Summary Section \ref{queue estimation summary}.
+
+
+
+\subsection{Queue Definition and Time Scale}
+
+The queue definition and the selection of a time scale vary according to different study purposes. In terms of the macroscopic queue estimation for traffic management, estimating the maximum queue length, which denotes the maximum value of queue lengths within a cycle is a good choice (\textcite{sharma2007input}, \textcite{liu2009real}, \textcite{cheng2012exploratory}, \textcite{cai2014shock}, \textcite{lee2015real}, \textcite{wang2015cycle}, \textcite{yin2018kalman}, \textcite{an2018real}, \textcite{gao2019connected}, \textcite{yao2019cycle}, \textcite{abewickrema2023multivariate}). Queue accumulation starts at the onset of the red interval and disperses at the beginning of the green phase; however, it is possible that during the green phase, newly arriving vehicles also begin to queue at the end of the queue. Consequently, the cycle-based measurement of queue lengths is categorized into two types: one that exclusively records vehicles arriving during the red signal period, and another that tracks vehicles arriving throughout both the red and green signal periods. \textcite{sharma2007input} define the counting period for each cycle as ending after the red signal plus the start-up lost time. They also establish a queue failure flag when the maximum queue length for a cycle meets or exceeds the storage capacity of that lane. \textcite{liu2009real} consider the maximum queue length during both the red and green period.
+
+The rear/back of the queue (\textcite{hu2022high}), often referred to as queue tail location, indicates the position of the last vehicle in the queue at a certain time step. This information is crucial for determining the placement of point detectors (such as loop detectors and video cameras) and for designing the length of road segments between intersections in road network design. 
+
+Queue length, commonly defined as the distance from the rear of the queue to the stop line 
+(\textcite{ban2011real}, \textcite{cheng2011cycle}, \textcite{comert2013simple}, \textcite{ramezani2015queue}, \textcite{yang2018queue}, \textcite{wang2020queue}, \textcite{tan2020fuzing}, \textcite{ferencz2023road}) or the number of nearly stationary vehicles (\textcite{vigos2008real}, \textcite{vigos2010simplified}, \textcite{hao2014cycle}, \textcite{aljamal2020real}, \textcite{wang2021kalman}, \textcite{comert2021queue}, \textcite{anusha2022dynamical}, \textcite{ferencz2023road}) at a certain time step, is also widely utilized for monitoring the traffic flow. 
+
+In the context of real-time queue estimation at signalized intersections, research typically focuses on evaluating signal performance, optimizing the signal timings, and synchronizing signals between upstream and downstream intersections, making cycle-based estimations highly valuable. Although most studies operate on a cycle-by-cycle time scale, \textcite{vigos2008real}, \textcite{vigos2010simplified}, \textcite{aljamal2020real}, \textcite{wang2021kalman}, and \textcite{hu2022high} have employed more granular second-by-second analyses. This finer time resolution is crucial for vehicle-based estimation and vehicle localization, pivotal technologies in connected vehicles that offer significant potential for application in intelligent transportation systems. Therefore, exploring queue estimation algorithms that utilize a second-by-second time scale is of paramount importance, an objective this paper directly addresses.
+
+\subsection{Methodologies and Algorithms}\label{LR: Methodologies and Algorithms}
+In traffic queue estimation, extensive research has been conducted utilizing theoretical frameworks such as shockwave theory and the input-output model, commonly referred to as the flow continuity equation. \textcite{ramezani2015queue} propose a method to estimate queue profiles as traffic shockwave polygons in the time-space plane, capturing the spatiotemporal formation and dissipation of queues. This method combines the collective effect of dispersed probe vehicle data with traffic flow shockwave analysis and data mining techniques. The queue profile estimation relies on position and velocity data from probe vehicles, while explicit information about signal settings and arrival distribution is essential. Numerical results from simulation experiments and tests on NGSIM field data with varying penetration rates and sampling intervals show that the proposed method performs promisingly and robustly compared to a uniform arrival queue estimation procedure. Seminal works based on shockwave theory include studies by \textcite{liu2009real}, \textcite{cheng2012exploratory}, \textcite{cai2014shock}, \textcite{wang2015cycle}, \textcite{gao2019connected}, \textcite{yao2019cycle}, \textcite{ban2011real}, \textcite{cheng2011cycle}, , and \textcite{wang2020queue}. Another common method for estimating vehicle count is the input-output approach, also known as the traffic flow continuity equation. This method involves using two traffic counting stations, one located at the entrance and the other at the end of the roadway link. Studies by \textcite{sharma2007input} and \textcite{an2018real} are also based on the input-output approach.
+
+ \textcite{vigos2008real} explains that while it is theoretically feasible to use the measurements of inflow and outflow to estimate vehicle counts \(N(k)\), the number of vehicles between two measurement points, this approach inherently results in the accumulation of measurement noise, which subsequently degrades the accuracy of these estimates over time. To mitigate this issue, \textcite{lee2015real}, \textcite{vigos2008real}, \textcite{vigos2010simplified}, \textcite{aljamal2020real}, \textcite{wang2021kalman} and \textcite{anusha2022dynamical} advocates using an input-output model combined with bayesian filtering techniques, such as the Kalman Filter (KF). Similarly, there are some studies combining shockwave theory and filter techniques, see \textcite{yin2018kalman}, \textcite{abewickrema2023multivariate}, \textcite{ferencz2023road}, \textcite{hu2022high}. 
+
+\textcite{hu2022high} develop a high-resolution approach for estimating queue profiles at urban intersections, utilizing an Extended Kalman Filter (EKF) based on shockwave theory. The approach assumes measurement noise follows a zero-mean Gaussian white noise distribution. The prediction of this model is powered by a machine learning-based dynamic shockwave propagation model that learns from historical data of connected vehicles (CVs). Correction of the model is achieved through data fusion-based shockwave sensing. This prediction-correction structure parallels the methodology in the current thesis, which, instead of utilizing EKF, employs a particle filter (PF) for estimating queue lengths and can counter any non-Gaussian noise in the system and measurement.
+
+Specifically, the investigations of \textcite{wang2015cycle}, \textcite{cheng2012exploratory}, \textcite{cai2014shock}, and \textcite{cheng2011cycle} highlight the utilization of probe trajectory data to pinpoint the critical point within traffic flows. Critical points (CP) are defined as the data points representing the changes in vehicle dynamics and can be extracted using different algorithms. For instance, \textcite{cheng2012exploratory} utilizes the approach where the trajectory between two critical points (CPs) is clearly defined and falls into one of two basic movements: (a) uniform motion, which includes stopping as a special case, and (b) uniformly accelerated motion, which also encompasses deceleration. Thus, a trajectory can be segmented into various regimes with CPs serving as the boundaries, where each regime corresponds to one of these two fundamental movements.
+
+\textcite{gao2019connected} introduces a queue length sensing model that leverages V2X technology, incorporating sub-models based on shockwave sensing and a back propagation (BP) neural network. The model analyzes state information from connected vehicles to understand queue formation and predict lengths by calculating shockwave velocities and using a BP neural network trained on historical data. These sub-models are then integrated using variable weights to determine real-time maximum queue lengths at intersections.
+
+\textcite{wang2020queue} develop an integer programming model featuring a set of constraints designed to estimate the queue profile, adhering to the spatiotemporal propagation of shockwaves. The novelty of the approach lies in its ability to detect queue profiles of any shape, contrasting with other studies that typically use triangles or polygons for approximation.
+
+Queue estimation also utilizes analytical and probabilistic models based on the Bayesian network, as demonstrated in studies by \textcite{hao2014cycle}, \textcite{comert2021queue}, \textcite{comert2013simple}, and \textcite{tan2020fuzing}.  Particularly, recursive Bayesian frameworks such as the Kalman filter and its variations (EKF, AKF, UKF) and particle filter, consisting of a state update process (prediction) and measurement update process (correction). The sequence of these processes differentiates data estimation from prediction tasks. In traffic state estimation, once current measured data are available, they are used to refine the estimated values. Due to some ambiguity surrounding the terms estimation and prediction in the literature, this thesis defines estimation as referring to the current state and prediction as referring to future states. Conversely, predictions are generated using estimated values in the time update equation (\textcite{chen2011real}). Moreover, this recursive approach ensures that traffic state data are efficiently computed using only the data from previous states, rather than the entire historical dataset (\textcite{ristic2003beyond}).
+
+\textcite{aljamal2020real} conducted extensive research on real-time traffic stream density estimation at signalized intersections, focusing on the number of vehicles, time scales, and addressing uncertainties through the evolution of estimation algorithms. His work is pivotal in understanding the effectiveness of various methodologies, particularly the Kalman filter (KF), adaptive Kalman filter (AKF), and particle filter (PF). Aljamal demonstrated that the linear Kalman filter approach, while effective, showed limitations under certain conditions, such as low market penetration (LMP) of connected vehicles (CVs) and the presence of trucks. To address these limitations, he developed an adaptive Kalman filter (AKF) that dynamically estimates system and measurement noise, significantly improving estimation accuracy. In advancing the estimation algorithms, Aljamal also introduced a nonlinear Particle Filter (PF) approach. He found that while the PF's accuracy improves with an increased number of particles and higher CV penetration, it is highly sensitive to initial conditions. Conversely, the KF approach was less sensitive and provided more consistent performance, leading Aljamal to conclude that the KF generally outperformed the PF for macroscopic traffic density estimation. However, there is a research gap that the proposed PF-SIQE aims to address. Unlike Aljamal’s macroscopic focus on the number of vehicles, the PF-SIQE is designed for vehicle-based localization, estimating the location of all vehicles within the intersection and their dynamic movements over time. This vehicle-based approach leverages the scalability, modularity, and suitability of the particle filter for addressing the nonlinear nature of vehicular dynamics. Previous studies by Peker et al. (2011) and Fang et al. (2019) have successfully utilized vehicle-based particle filter frameworks for localization issues, indicating its common application in such contexts. Thus, despite Aljamal's findings favoring the KF for vehicle count estimation, the PF is expected to perform better in vehicle-based localization due to its robustness in handling nonlinearities in vehicular dynamics.
+
+The Kalman filter approach, commonly used in handling uncertainties, assumes that both system noise and measurement noise follow a Gaussian distribution. This assumption implies a predictable, regular pattern of variability that is statistically manageable. However, this assumption may not hold at signalized intersections where driver behavior becomes more complex due to the yellow light. At this phase, drivers enter what is known as the decision-making dilemma zone, where they must quickly decide whether to stop or proceed through the intersection. This decision is influenced by several factors including speed, distance to the intersection, and personal risk assessment, which introduces a non-linear and often non-Gaussian behavior in driver responses (\textcite{gates2007analysis}). The unpredictability introduced by the dilemma zone conflicts with the Gaussian noise assumptions of the Kalman filter, potentially complicating the accuracy of estimations at these critical traffic points. \textcite{helbing2001traffic} found that vehicular traffic exhibits highly nonlinear behavior, characterized by complex interactions among vehicles. Therefore, the vehicle dynamic may not be adequately captured by a Gaussian distribution. Moreover, the assumption of Gaussian distribution may fail to fully address various types of detection noise such as the miss count or double count errors commonly found with loop detectors. The issue could be better modeled using a discrete probability distribution, which represents another significant contribution of this thesis in Chapter \ref{chapter: Development of a Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE)}.
+
+Although research utilizing particle filters for queue estimation is scarce, their application in traffic state estimation has been explored. 
+In both single-lane and multi-lane scenarios, where traffic conditions are stationary and homogeneous, the number of vehicles can be calculated by multiplying the traffic density by the road length. Various traffic models (such as Greenshields-based CTM-V model, Van Aerde flow continuity model) and recursive Bayesian filtering techniques (such as Ensemble Kalman filter and Particle filter) have been employed to estimate traffic state variables in recent years, see \textcite{wang2005real}, \textcite{mihaylova2007freeway}, \textcite{sau2007particle}, \textcite{work2008ensemble}, \textcite{cheng2006traffic}, and \textcite{chen2011real}. Notably, the particle filter has been identified as particularly effective due to its capability to handle nonlinear updates of traffic variables (\textcite{sau2007particle}).
+
+\textcite{peker2011particle} and \textcite{fang2019road} utilize a vehicle-based particle filter framework to address localization issues, a topic also of interest in this thesis. \textcite{peker2011particle} present a novel algorithm for vehicle localization and map-matching using a particle filter aided by digital maps. Their algorithm enhances the likelihood function during the weight calculation step of the particle filter by incorporating the probability of a vehicle being in a certain area of the digital map based on its speed, combined with routing information. Similarly, \textcite{fang2019road} propose a part-based particle filter for on-road vehicle tracking. This model integrates a part-based strategy with a particle filter by introducing a hidden state that represents the vehicle's center position, allowing for efficient collective updating of particles. However, the proposed PF-SIQE in this thesis addresses a different set of challenges and objectives. Unlike \textcite{peker2011particle} and \textcite{fang2019road}, which focus primarily on vehicle localization and tracking, the PF-SIQE aims to localize the positions of all vehicles within a road segment at an intersection. Our method leverages car-following behavior and responses to traffic signals to estimate queue lengths and provide comprehensive queue information. Additionally, the PF-SIQE focuses on capturing the dynamics of queues, detailing how they evolve over time. This approach is designed to address the specific needs of traffic management at signalized intersections, offering insights into queue formation and dissipation that are crucial for optimizing traffic flow and reducing delays.
+
+Particle filters have been developed for traffic state estimation across both freeways and signalized arterials by various researchers. \textcite{mihaylova2007freeway} applied particle filters to estimate density and speed on freeways using data solely from roadside sensors located at road segment boundaries, highlighting the framework's scalability, modularity, and suitability for addressing the nonlinear nature of vehicular traffic. They modeled the count of missed count and false detections as Poisson random variables and assumed Gaussian distribution for speed noise. Additionally, \textcite{mihaylova2012parallelized} introduced innovative parallelized particle filter and Gaussian sum particle filter methods for enhancing traffic state estimation. With the inspiration from \textcite{mihaylova2007freeway}, particle filter framework is used in this thesis. \textcite{chen2011real} explored the effectiveness of the particle filter framework with the Van Aerde flow continuity model, demonstrating speed estimation on freeways compared to the Extended Kalman Filter (EKF). Meanwhile, \textcite{aljamal2020real} employed a particle filter based on the input-output model and hydrodynamic equations to estimate vehicle numbers at signalized intersections.  
+
+A very interesting study by \textcite{xie2018generic} presents a generic data assimilation framework for estimating vehicle trajectories and traffic state variables. This framework is both macroscopic and vehicle-based, incorporating the Intelligent Driver Model (IDM), a microscopic traffic flow model, into the state update process. This process is versatile and highly modular, allowing for the integration or replacement with other microscopic traffic models, such as those for lane changing. This demonstrates the adaptability of the particle filter. In this thesis, IDM is also implemented as part of the state transition function within the particle filter framework. The primary distinction between \textcite{xie2018generic} and this thesis lies in the focus of the proposed PF-SIQE on modeling the decision probability of drivers' responses to yellow lights at signalized intersections, particularly within dilemma zones, and the associated acceleration and deceleration behaviors. Additionally, the PF-SIQE considers a broader range of detector types and locations (of roadside sensors).  The thesis believes that such complex, decision-making processes are well-suited to the particle filter's capabilities in handling nonlinearity.
+
+
+\subsection{Uncertainties}
+In Section \ref{LR: Methodologies and Algorithms}, it is mentioned that the accumulation of measurement noise in the state equation is unignorable. It is indispensable to study various detection technologies, analyze the corresponding measurement noise distribution from the data source, and devise strategies to deal with this noise to improve the estimation accuracy. In this section, the thesis generally discusses the prevalent uncertainties encountered in queue estimation. Further details about various detection technologies will be elaborated in Section \ref{detection technologies}.
+
+Generally, two primary types of noise must be addressed: system noise and measurement noise. An example of the difference in drivers is the throttle response of a vehicle driving on a road is influenced by inherent characteristics of the vehicle itself, which include certain biases. Additionally, as the vehicle travels, factors such as wind resistance, road curvature, and gradients can cause the actual speed or acceleration to deviate from theoretical predictions.
+\textcite{ajitha2015real} highlighted the significance of understanding the characteristics of system noise to manage it effectively and enhance model performance.  In real-world applications, estimating the statistical characteristics of system noise, namely mean and variance can be challenging. To address this issue, \textcite{chu2005adaptive} have developed the adaptive Kalman filter (AKF) for estimating freeway travel time using data from both loop detectors and connected vehicles (CVs). They utilized the method for estimating noise statistical parameters originally proposed by \textcite{myers1976adaptive}. However, they still assume a Gaussian distribution for the system noise, which may not fully capture the randomness and complexity in the modeling process. In this thesis, the approach to system noise is not confined to a Gaussian distribution but is open to any formulation of noise, making it more closely aligned with real-world conditions. This flexibility represents the significant contribution of the thesis.
+
+Measurement noise typically arises from various detection technologies involving commonly used sensors, which include both roadside sensors and floating sensors. Roadside sensors frequently employed in queue estimation encompass loop detectors, video-based detectors, license plate recognition systems, and push buttons producing information on occupancy, speed, counts, traffic flow images, license plate numbers, and vehicle types. Similarly, measurements from detection sensors are often subject to various errors. For instance, errors such as missed or double counts are common with loop detectors, \textcite{mihaylova2007freeway} introduced the number of vehicles that a detector missed and the number of false detections in freeway as independent Poisson random variables, yet there is scant literature offering solutions to these problems in signalized intersections. Another significant challenge with roadside sensors is their placement. In congested conditions, queues may extend beyond the location of the roadside sensors, making it difficult to estimate the extent of queues that are not directly observable. \textcite{sharma2007input} briefly discusses the placement of roadside sensors to improve measurement accuracy. While the distribution of measurement noise is not given, it still inspires the consideration that future research could explore how different placements of roadside sensors might impact data quality. Building on this, the proposed PF-SIQE incorporates the placement of roadside sensors by adding a variable $d_\text{detector}$ in Chapter \ref{chapter: Development of a Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE)}, which indicates the placement of the detector, thereby acknowledging the potential impact of sensor location on the estimation. \textcite{anusha2022dynamical} developed a Kalman filter approach based on the input-output model to estimate both queue within advance detector (QWAD), and queue beyond advance detector (QBAD), which address the exceeding issue.
+
+Research papers often use two loop detectors, positioned at the entry and exit of a traffic link, to measure inflow and outflow, subsequently applying the flow continuity equation to calculate the number of vehicles. However, the literature, including \textcite{anand2014data} and \textcite{vigos2008real}, notes that noise in the data from loop detectors can lead to significant estimation errors. To mitigate this noise, \textcite{vigos2008real} suggests incorporating an additional loop detector midway along the link. Yet, the implementation of this model is costly, requiring at least three loop detectors. In practice, many loop detectors have been in place for years and their placement is often not optimal. Therefore, there is a need to explore methods and algorithms that can address this noise without necessitating the reinstallation or addition of more roadside sensors, as a measure to control costs.
+
+On the other hand, common floating sensors comprise GPS-equipped probe vehicles, mobile phone GPS, connected vehicles, mobile sensors, and on-vehicle sensors producing information on vehicle ID, location, time, speed, acceleration, whether there is a follower, spacing from the predecessor and follower, the speed of predecessor and follower, and sample travel time. For floating data, the level of market penetration (LMP) is recognized as a critical area of research and might determine the extent to which estimation results are affected by measurement noise. \textcite{hu2022high} conclude that connected vehicles (CVs) with low market penetration rates (MPRs) provide limited real-time information, whereas the shockwave propagation model, derived from historical data, is less susceptible to Gaussian white noise. Conversely, when MPRs are relatively high, the impact of noise becomes more pronounced.
+
+\textcite{lee2015real} develop a Kalman filter approach based on the input-output model to counter the detection error and the error caused by lane change behavior. Similarly, \textcite{anusha2022dynamical} develop a Kalman filter approach based on the input-output model, modeling the mean and variance of process and measurement noise for various scenarios, including lane changes. Both \textcite{yin2018kalman}, and \textcite{vigos2008real} utilized a Kalman filter approach, incorporating process and measurement noise as zero-mean Gaussian distributions. Meanwhile, \textcite{abewickrema2023multivariate} and \textcite{wang2021kalman} employed a Kalman filter approach where the process noise is modeled as a zero-mean multivariate normal distribution, with measurement noise as zero-mean Gaussian white noise.  \textcite{vigos2010simplified} presented a detailed analysis of process and measurement noise in their Kalman filter approach based on the input-output model. \textcite{aljamal2020real} introduced a Neural Kalman filter (AKFNN) approach that combines an adaptive Kalman filter (AKF) with an artificial neural network (ANN). This approach uses the ANN to estimate the mean and variance of state noise and measurement noise at each time step. \textcite{ferencz2023road} developed an AI-based Kalman filter approach informed by shockwave theory, where both process and measurement noise are treated as zero-mean multivariate and Gaussian white noise, respectively.
+
+Research employing particle filters, such as those by \textcite{mihaylova2007freeway} and \textcite{xie2018generic}, focuses on addressing detection errors from roadside sensors, including missed counts, over-counts, and false detections. \textcite{mihaylova2007freeway} modeled both missed and false detections as Poisson random variables. On the other hand, \textcite{xie2018generic} developed data error models to address vehicle accumulation errors as well as missed and over-count errors. To study the probability distribution of vehicle accumulation errors, they derived discrete probability distributions from various probable sets of vehicle trajectories based on the data. Additionally, missed and over-count errors were specifically characterized by parameters of detection accuracy and the occurrence rate of over-counts. This approach is consistent with the methodology of the current thesis, which involves extracting a discrete probability distribution from the product requirement provided by loop detector manufacturers. This extraction technique complements the detection accuracy parameters outlined by \textcite{xie2018generic}, reinforcing the thesis's framework. 
+
+Moreover, since particle filters can effectively filter a wide range of non-Gaussian noises, the focus shifts to accurately obtaining the noise distributions for system and measurement noise as they occur in real-world settings. It is foreseeable that if the thesis can more precisely establish distributions for various types of noise encountered in real life, the estimator proposed in this thesis will yield results that are much closer to real-world outcomes.
+
+\subsection{Summary}\label{queue estimation summary}
+Most previous studies on queue estimation have taken a macroscopic approach based on shockwave theory or input-output model, often making assumptions about parameters that inherently involve microscopic vehicle dynamics, such as assuming Poisson arrival patterns for vehicle arrivals. When addressing system noise and measurement noise, many studies rely on a recursive Bayesian framework, with the Kalman filter and its variants (Extended Kalman Filter, Ensemble Kalman Filter, Unscented Kalman Filter, and Adaptive Kalman Filter) being particularly popular. While the Kalman filter (KF) is effective in tracking the mean and variance of the process state probability distribution function (pdf), it is important to note that it assumes the shape of the pdf remains Gaussian. If the pdf has a non-Gaussian shape, the KF can still correctly predict the mean and variance, but it may not capture the changing shape of the pdf accurately over time. This can be a limitation when dealing with complex, non-Gaussian noise distributions, such as those arising from nonlinear vehicular dynamics.
+
+To encounter the challenges of nonlinearity, the particle filter (PF) has gained increasing attention. The particle filter framework offers several advantages for addressing traffic state estimation problems, including:
+\begin{enumerate}
+    \item The ability to handle the inherent nonlinearity of vehicular traffic dynamics.
+    \item Scalability and modularity, which allow for the integration of various microscopic traffic models that more accurately reflect vehicle dynamics.
+\end{enumerate}
+
+In this current thesis, the particle filter framework allows for more flexibility in assumptions and constraints. For instance, it is unnecessary to set signal control timings to fixed or actuated controls as a baseline, assume specific vehicle arrival patterns, or require optimal placement of loop detectors. 
+
+Other fascinating aspects of capturing vehicle dynamics include how vehicles react to signal timings, particularly the yellow light, the lane-changing behavior as they approach an intersection, and the arrival patterns at signalized intersections, with a special focus on platoon-correlated arrivals. These factors are critical in understanding and modeling the complex interactions that occur at intersections, which can significantly influence traffic flow and queue dynamics. One of the principal contributions of this thesis is the development of a decision-making model that simulates how drivers respond to traffic signals, particularly during the yellow light within the dilemma zone. This model is integrated into the state transition function module of the particle filter framework. The probability of the go or stop decision is modeled to reveal the randomness in vehicular dynamics. The state transition function is instrumental in generating ground truth simulated data. Upon receiving measurements from the measurement function, the proposed PF-SIQE provides estimations of the states (including location, speed, and acceleration) of all vehicles at each time step within the study area. Each particle carries the estimations of all the states for all vehicles at the current time step, with the assumption that these state estimations are known to each vehicle, thereby enhancing a vehicle's perception of its surrounding traffic environment. This approach not only improves the accuracy of the traffic model but also significantly enhances the real-time operational intelligence of the system.
+
+Studying the lateral vehicular dynamics at multi-lane signalized intersections, such as predicting lane change behavior for both the vehicle itself and surrounding vehicles, presents a fascinating area of research.  This thesis lays a solid foundation for future work on lateral vehicle motions, offering a robust starting point for developing more nuanced models that can accurately capture the complexities of lane changes at intersections. Considering the platoon arrival pattern is crucial due to the widespread implementation of actuated control timing at traffic signals. One of the guiding principles of such control is to clear all waiting vehicles at an intersection by adjusting the green time. This approach leads to a phenomenon where vehicles automatically form a platoon and progress from the downstream to the upstream intersection. The interactions within these platoons, where vehicles can communicate with each other, present an interesting area for future study. It is anticipated that incorporating this factor into the estimation scheme will yield improved results, as understanding and modeling these vehicle-to-vehicle communications can enhance the accuracy and efficiency of traffic management systems.
+
+\section{Detection Technologies}\label{detection technologies}
+
+Given the effectiveness of the particle filter integrated with the Intelligent Driver Model (IDM) in managing nonlinear uncertainties in both system and measurement, as demonstrated by \textcite{xie2018generic}, a critical focus now shifts to studying and constructing the measurement noise distribution. Data is not only invaluable in the estimation process, such as when constructing the state transition function, but also essential for validating and calibrating the model. Therefore, this section will extensively explore the common detection technologies used in queue estimation, providing a detailed examination of how these methods contribute to the accuracy and reliability of traffic models.
+
+Detection technologies can be categorized based on the data type of sources into Eulerian sensors, Lagrangian sensors, and third-party vendors (\textcite{klein2024roadside}). Additionally, Eulerian sensors can be categorized based on installation methods into intrusive and nonintrusive sensors, and based on the way they transmit and receive energy into passive and active sensors. While some sensors can be considered as point-based roadway sensors, others, such as long queue sensors (e.g., loop detectors), cannot be viewed as a single point. Table \ref{DT1} and \ref{DT2} shows the categorization of the detection technologies. 
+
+\textcite{klein2024roadside} summarize the collection of traffic data has significantly advanced with the inclusion of a diverse range of sensors, such as inductive loop detectors (ILD), magnetometer sensors, magnetic sensors, video detection systems (VDS) using image processing with visible spectrum and infrared cameras, microwave radar sensors (including presence detecting microwave radar sensors and Doppler microwave sensors), passive infrared (PIR) sensors, LiDAR sensors, acoustic sensors, and ultrasonic sensors. These can be regarded as Eulerian sensors. 
+
+The Lagrangian sensors, which move with the traffic flow (\textcite{bayen2010mobile}), includes probe vehicles (\textcite{turner1998travel}), or floating cars, which can provide traffic management centers with emissions information along with standard traffic flow parameters linked to a vehicle via GPS data (\textcite{pack2021use}) or other global navigation satellite systems’ location devices. Additional methods include cell phone tracking through media access control address readers, automatic license plate readers, toll tag (radio-frequency identification transponder) readers, taxi fleet sources, and trucking industry transponders (\textcite{singer2013travel}).
+
+\textcite{klein2024roadside} mention that third-party data sources include HERE, INRIX, Miovision, StreetLight, TomTom, Waze, and Wejo (\textcite{coifman2013assessing}; \textcite{mccracken2016assessment}; \textcite{tsapakis2021independent}) which provide measurements of speed, travel time, flow rate, incident reporting, analytics, and OD programs.
+
+Different sensors have vastly different application scenarios. For example, magnetometer sensors can be installed on bridge decks where inductive loop detectors (ILDs) may be affected by the steel support structure or simply cannot be installed due to other constraints (\textcite{klein2024roadside}). However, in this section, the distinction between applications and scenarios is minimized because the thesis focuses primarily on detection technologies that can be used at signalized intersections.
+
+To ensure the literature review aligns with the objectives of the thesis, it is crucial to investigate several key aspects:
+\begin{itemize}
+    \item The measurement output of each sensor type;
+    \item The noise distribution associated with these measurements;
+    \item The advantages and disadvantages of each sensor from the perspectives of:
+    \begin{itemize}
+        \item Whether the output is useful, versatile, and can be adapted for the particle filter framework;
+        \item Whether the measurement noise distribution is well-studied and widely known, and if not, whether it is easy to construct.
+    \end{itemize}
+\end{itemize}
+
+This structured approach will provide a comprehensive understanding of how each detection technology contributes to traffic data collection and analysis, facilitating a more informed application in traffic estimation models.
+
+\newgeometry{landscape, left=1cm, right=1cm, top=1.5cm, bottom=1.5cm}
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize 
+\caption{Overview of Detection Technologies \uppercase\expandafter{\romannumeral1} (\textcite{klein2024roadside})}
+\label{DT1}
+% 为各列分配不同的相对宽度
+\begin{tabularx}{\linewidth}{@{} l 
+>{\hsize=.25\hsize}X  
+>{\hsize=.3\hsize}X  
+>{\hsize=.3\hsize}X  
+>{\hsize=1.8\hsize}X 
+>{\hsize=0.6\hsize}X 
+>{\hsize=.2\hsize}X 
+@{}} 
+\toprule
+\textbf{Eulerian Sensor} & \textbf{Transmit and Receive Energy} & \textbf{Installation} & \textbf{Coverage} & \textbf{Measurement Output} & \textbf{Measurement Accuracy} \\ 
+\midrule
+Inductive loop detector (ILD) & Active & Intrusive & Single lane & 
+presence, count, lane occupancy, average speed (with one loop and an assumed vehicle length; with two loops in a speed trap configuration),  queue length with multiple loops, vehicle class with a high-sampling-rate detector electronics module. & allowable error of vehicle count, vehicle length, and occupancy  \\
+Magnetometer sensor & Passive & Intrusive  & Single lane & able to detect stopped vehicles; presence, count, lane occupancy, average speed (2 magnetometers, speed trap configuration), queue length (multi-magnetometers), classification (length based).& - \\ 
+Magnetic sensor & Passive & Intrusive & Single lane & most do not detect stopped vehicles; count, lane occupancy, average speed, classification (length based). & vehicle count, speed and classification accuracy \\ 
+Video detection systems (VDS) & Passive & Nonintrusive & Multilane & presence, count, lane occupancy, speed, classification (length based); queue length, advanced detection; lane change frequency, turning movements; incident alarms for stopped and slow vehicles, congestion, pedestrian, wrong-way vehicles. & - \\ 
+Microwave radar sensor & Active & Nonintrusive & Multilane & count, presence with FMCW waveform, lane occupancy for stopped and moving vehicles with FMCW waveform, speed, range with FMCW waveform, “Pseudo” traffic density calculated from point data with FMCW models, classification (length based), pedestrian detection. &  detection probability, false alarm probability  \\ 
+Doppler microwave sensor & Active & Nonintrusive & Multilane & count, lane occupancy for moving vehicles, speed. & detection probability, false alarm probability \\ 
+Passive infrared (PIR) sensor & Passive & Nonintrusive & Multilane & count, presence, lane occupancy, speed with multiple-detection zone models, queue with multiple sensors or detection zones. & - \\ 
+LiDAR sensor & Active & Nonintrusive & Multilane & count, presence, lane occupancy, speed, vehicle length, vehicle classification with 2D and 3D imaging or axle counting, range. & classification accuracy \\ 
+Acoustic sensor & Passive & Nonintrusive & Multilane & count, presence, lane occupancy, average speed for a selectable update period (1 to 220s) by using multiple-detection zones or data processing algorithm that assumes an average vehicle length. & vehicle count and speed accuracy \\ 
+Ultrasonic sensor & Active & Nonintrusive & Multilane & count, presence, lane occupancy, speed with Doppler model or multiple detection-zone pulse model, range with pulse model, queue with multiple single-zone pulse models. & - \\ 
+Technology combinations & Active \& Passive & Nonintrusive & Multilane & - & -  \\ 
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+
+\newpage
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize 
+\caption{Overview of Detection Technologies \uppercase\expandafter{\romannumeral2} (\textcite{klein2024roadside})}
+\label{DT2}
+% 为各列分配不同的相对宽度
+\begin{tabularx}{\linewidth}{@{} l 
+>{\hsize=1\hsize}X  % Literature
+>{\hsize=1\hsize}X  % Queue Definition
+>{\hsize=1\hsize}X  % Time Scale
+@{}} 
+\toprule
+\textbf{Lagrangian Sensor} & \textbf{ Measurement Output}   \\
+\midrule
+Probe vehicles (floating cars) with GPS & \multirow{6}{*}{\begin{tabular}[c]{@{}l@{}}travel times, \\ origin-destination (OD) pair data for planning purposes, \\vehicle density studies, \\ the classification and location of congestion\end{tabular}}   \\
+Cell phone tracking through media access control address readers&    \\
+Automatic license plate readers&    \\
+Toll tag (radio-frequency (RF) identification transponder) readers&    \\
+Taxi fleet sources&    \\
+Trucking industry transponders&    \\
+\toprule
+\textbf{Third-party Vendor} & \textbf{ Measurement Output}   \\
+\midrule
+HERE, INRIX, Miovision, StreetLight, TomTom, Waze, and Wejo  & speed, travel time, flow rate, incident reporting, analytics, and OD programs   \\
+\toprule
+\textbf{Detection Technologies} & \textbf{ Measurement Output}   \\
+\midrule
+In-car sensor & braking severity, hazard warning light activation, time headways to vehicles surrounding the ego vehicle, and ego vehicle velocity, acceleration, steering wheel position, traction loss, lane departure warning, windscreen wiper activation, and air bag deployment.   \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+\restoregeometry
+
+
+
+\subsection{Roadside Sensor (Eulerian Sensor)}\label{Roadside Sensor (Eulerian Sensor)}
+
+There are various names for sensors located at a given position; \textcite{jain2019review} refers to them as "In Situ" sensors, many studies call them roadside sensors or point sensors, and \textcite{klein2024roadside} defines them as Eulerian sensors.This thesis will use both terms, roadside sensor and Eulerian sensor. Eulerian sensors are employed to monitor traffic flow at specific locations, providing data for applications such as signalized intersection control, metering, wrong-way vehicle detection, queue warning, incident detection, congestion monitoring, traffic surveys, planning, and active transportation and demand management (\textcite{klein2024roadside}).
+
+This section will give simple introduction of the traditional common use Eulerian sensors shown in Table \ref{DT1}, and focus on the measurement output and measurement noise, of the output. To align with the measurement function module in Chapter \ref{chapter: Development of a Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE)} and \ref{chapter:Experimental Design and Analysis}, give an extra focus on the inductive loop detector.
+
+\subsubsection{Inductive-loop detector (ILD)}\label{Inductive-loop detector (ILD)}
+An inductive-loop detector senses the presence of a conductive metal object (i.e. a vehicle) by inducing electrical currents in the object, which decreases the loop inductance. These detectors are installed in the roadway surface and consist of four main parts: a wire loop embedded in the pavement, a lead-in wire running to a pull box, a lead-in cable connecting the wire to the controller, and an electronics unit housed in the controller cabinet (Traffic Detector Handbook: \textcite{klein2006traffic}). The electronics unit contains an oscillator and amplifiers that excite the embedded wire loop and support functions such as loop sensitivity selection and pulse or presence mode operation to detect vehicles passing over the detection zone. 
+
+The measurement outpus include presence, count, lane occupancy, average speed (with one loop and an assumed
+vehicle length; with two loops in a speed trap configuration), queue length with multiple loops, vehicle class with a high-sampling-rate detector electronics module. 
+
+One common issue with the use of roadside sensors, such as inductive-loop detectors, is their susceptibility to detection failures, which inevitably lead to errors in the collected data (\textcite{mimbela2007summary}, \textcite{lee2012camera}). \textcite{vigos2008real} pointed out that the accumulation of detector error is crucial in estimation problems. For example, the placement of roadside sensors presents a significant challenge because their fixed location limits the ability to spatially track vehicle movements on the road. This limitation becomes particularly problematic in traffic congestion, where queue lengths may extend beyond the sensor's location, leading to incomplete data on vehicle queues. Another issue arises with loop detectors during periods of heavy congestion. If a vehicle remains stationary over the loop detector for more than three seconds, the detector often fails to produce reliable measurements (Traffic Detector Handbook: \textcite{klein2006traffic}). This limitation underscores the need for adaptive detection technologies that can maintain accuracy under varying traffic conditions.
+
+%Additionally, detection errors from video detectors often stem from their sensitivity to environmental factors. These factors can include variations in lighting conditions and vehicle color, which significantly impact the accuracy of the data collected (\textcite{an2018real}). These environmental sensitivities highlight the importance of considering external conditions when deploying video detectors and necessitate sophisticated calibration methods to ensure data reliability across different scenarios.
+
+There is also research aimed at addressing these errors. \textcite{mihaylova2007freeway} treated missed counts \( Q_{\text{j,s}}^{\text{missed}} \) and false detection \( Q_{\text{j,s}}^{\text{false}} \) 
+ as Poisson random variables, providing a statistical framework to quantify these discrepancies. The probability distribution function of the measurement noise \( \xi_{Q_{i}, s} \) ($\xi_{Q_{i}, s} = Q_{\text{j,s}}^{\text{false}} - Q_{\text{j,s}}^{\text{missed}}$ ): 
+ \begin{equation}
+\begin{aligned}
+    p(Q_{j,s}^{\text{err}} = v_{i,s}^{\text{err}}) &= \sum_{v_{i,s}^{\text{missed}} = \max(0, -v_{i,s}^{\text{err}})}^{\infty} \frac{\lambda_1^{(v_{i,s}^{\text{err}} + v_{i,s}^{\text{missed}})} e^{-\lambda_1}}{(v_{i,s}^{\text{err}} + v_{i,s}^{\text{missed}})!} \cdot \frac{\lambda_2^{v_{i,s}^{\text{missed}}} e^{-\lambda_2}}{v_{i,s}^{\text{missed}}!}
+\end{aligned}
+\end{equation}
+
+ Where the $v_{i,s}^{\text{err}}$ indicates the number of vehicles are false detected, and the $v_{i,s}^{\text{missed}}$ indicates the number of vehicles are missed counted.
+
+ 
+\textcite{xie2018generic} further differentiated these errors into two categories: vehicle accumulation errors and vehicle passage errors, which include missed and over-count errors. They managed vehicle accumulation errors effectively by approximating a discrete probability distribution from histograms. Missed and over-count errors were quantified using specific parameters of detection accuracy and the occurrence rate of over-counts. Detection accuracy was defined as the probability that a sensor correctly identifies a vehicle's passage, while the complementary probability $1 - p$ represents the likelihood of a missed detection. The occurrence rate of over-counts was modeled as a Poisson distribution, where $\lambda$ represents the rate of over-counts during a given time interval. Consequently, the time between two consecutive over-count events follows an Exponential distribution with a mean of $1 / \lambda$.
+
+There are specifications and guidelines from manufacturers regarding the accuracy of loop detectors, the noise characteristics are described in terms of product accuracy. For example, a single-loop accuracy of I-Loop Duo (two-channel) shows in Table \ref{I-Loop Duo (two-channel) single-loop accuracy}. For traffic management purposes, an example of specification states as in Table \ref{Loop detector Specifications. Source: Henk Taale, used with permission}.
+
+\begin{table}[htp]
+    \centering
+    \begin{tabular}{cc}
+    \hline
+        Output & Accuracy\\ \hline
+        Count & 99.5\%\\
+        Aggregated Speed & 95\% \\
+        Classification & 90\%–95\% \\ \hline
+    \end{tabular}
+    \caption{I-Loop Duo (two-channel) single-loop accuracy (\textcite{klein2024roadside})}
+    \label{I-Loop Duo (two-channel) single-loop accuracy}
+\end{table}
+
+
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{p{0.8\linewidth}}
+\toprule
+\textbf{Vehicle Counting Accuracy} \\
+\midrule
+The number of vehicles counted deviates, in 95\% of the cases, by a maximum of 2\% from the actual number when a group of 1,000 vehicles passes a counting point on a lane. \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.1cm}
+
+\begin{tabular}{p{0.8\linewidth}}
+\toprule
+\textbf{Speed Measurement Accuracy (95\% of cases)} \\
+\midrule
+\begin{itemize}
+    \item 10\% if the speed is $\leq$ 20 km/hr;
+    \item 3\% if the speed is $>$ 20 km/hr and $\leq$ 60 km/hr;
+    \item 5\% if the speed is $>$ 60 km/hr and $\leq$ 180 km/hr;
+    \item 10\% if the speed is $>$ 180 km/hr and $<$ 250 km/hr.
+\end{itemize} \\
+\bottomrule
+\end{tabular}
+
+\vspace{0.1cm}
+
+\begin{tabular}{p{0.8\linewidth}}
+\toprule
+\textbf{Speed Measurement Accuracy (remaining 5\% of cases)} \\
+\midrule
+\begin{itemize}
+    \item 20\% if the speed is $\leq$ 20 km/hr;
+    \item 6\% if the speed is $>$ 20 km/hr and $\leq$ 60 km/hr;
+    \item 10\% if the speed is $>$ 60 km/hr and $\leq$ 180 km/hr;
+    \item 20\% if the speed is $>$ 180 km/hr and $<$ 250 km/hr.
+\end{itemize} \\
+\bottomrule
+\end{tabular}
+\caption{Loop detector Specifications. Source: Rijkswaterstaat, the Netherlands; translated by Henk Taale; used with permission. }
+    \label{Loop detector Specifications. Source: Henk Taale, used with permission}
+\end{table}
+
+The specifications and accuracy characteristics of loop detectors vary across different models and configurations. The noise in loop detector readings arises not only from the quality of the electronic unit, which ideally generates a pulse whenever a vehicle passes over it, but also from external factors. These factors include vehicles lingering too long on a loop, passing over the loop too quickly, or being too small to be effectively detected, leading to missed counts. Additionally, lateral vehicular movements can cause a specific vehicle to be detected by two adjacent loop detectors, potentially resulting in a double-count error.
+
+To integrate with the particle filter framework, a measurement noise distribution is essential. However, extracting this distribution from the measurement output accuracy presents a challenge that needs to be addressed.
+
+Next, the measurement output and noise characteristics of various other roadside sensors will be outlined.
+%In practice, there is a notable lack of information and data regarding these errors. \textcite{xie2018generic} paves a path forward by proposing methods to obtain the measurement noise distribution. This can be achieved by approximating a discrete probability distribution from the histogram, which shows various probable sets of vehicle trajectories based on the data (i.e. posterior distribution). Alternatively, specific parameters such as detection accuracy and the occurrence rate of over-counts can be introduced. These approaches are crucial for improving the reliability and accuracy of data collected from loop detectors, thereby enhancing traffic monitoring and management systems.
+
+%Although adding more loop detectors on a link or optimally placing roadside sensors can improve the accuracy of occupancy and speed measurements (\textcite{vigos2010simplified}, \textcite{sharma2007input}), the costs associated with installation, reinstallation, and maintenance cannot be overlooked. Given that many roadside sensors are already installed, albeit not always in optimal locations, it is essential to develop algorithms that can effectively utilize the valid information from existing infrastructure. This approach helps maximize the utility of current sensor deployments while managing budget constraints and minimizing disruptions due to additional installations.
+
+%With the advancement of V2X technology, the widespread adoption of connected vehicles (CV), and the maturation of GPS technology, there is a compelling case for a shift in focus. It is possible and feasible that floating sensing data will become increasingly popular and the focus of future research, given its accuracy, availability, and ease of processing. This data type has increasing potential to become the primary source for traffic monitoring and management. Traditional point detector data, while still valuable, could play a supplementary role, enhancing the overall model rather than being the main focus. This integration of new technologies with existing infrastructure can lead to more efficient and cost-effective traffic management solutions.
+
+\begin{enumerate}
+    \item \textbf{Magnetometer sensor and magnetic sensor:} Magnetic sensors are passive devices that detect the presence of a metallic object by sensing a perturbation (known as a magnetic anomaly) in Earth's magnetic field caused by the object. There are two types of magnetic field sensors used in traffic flow parameter measurement: magnetometers and magnetic detectors.
+    \begin{itemize}
+        \item Magnetometers can be installed both intrusively and at the side of a roadway.
+        \item Since magnetometers are wirelessly deployed, they reduce installation time and cost compared to inductive loop detectors (ILDs).
+        \item Typical output data from these sensors include vehicle count, lane occupancy, and the ability to detect the presence of vehicles. Magnetometers, unlike magnetic sensors, can detect stopped vehicles. When configured in a speed trap setup with two magnetometers, they can measure average vehicle speed. Additionally, multiple magnetometers can be used to determine queue lengths, and with special signal processing and arrays of magnetometers, vehicle classification can also be achieved.
+        \item The accuracy of count, speed, and classification has been studied by various researchers. For instance, \textcite{middleton2000initial}, \textcite{minge2010evaluation},\textcite{minge2011evaluation} and \textcite{grone2012evaluation} have reported that the accuracy of count, speed and classification in the form of percentage within the baseline, error and average error for the Model 702. \textcite{middleton2000initial} showed that speed accuracy (in a speed trap configuration) has a 95\% confidence interval of ±7.3 miles per hour, based on an average over one minute. This indicates that the true speed measurement is expected to fall within this range 95\% of the time.
+    \end{itemize}
+    \item \textbf{Video detection systems (VDS):} A VDS typically includes one or more cameras, a microprocessor-based computer for digitizing and analyzing the imagery, and software for interpreting the images and converting them into traffic flow data. This system can replace several in-ground inductive loops, detect vehicles across multiple lanes, and potentially lower maintenance costs. Signalized intersection control is the most common application.
+    \begin{itemize}
+        \item Older VDS models provide limited vehicle classification by length. In contrast, newer models with edge processing use artificial intelligence (AI) and deep learning algorithms for image classification, particularly edge detection computing algorithms, to detect and classify vehicles and other objects.
+        \item VDS performance can be affected by several factors, including shadows, reflections from wet pavement, day/night transitions, headlight beams, relative color of vehicles and background, camera vibration, sun glint for east–west-facing cameras, and weather conditions such as clouds, heavy rain and snow, fog, haze, dust, and smoke. These effects are often mitigated by recall modes.
+        \item VDSs report vehicle presence, flow rate, lane occupancy, and speed for each class and lane. They can also compute local traffic parameters such as vehicle flow rate, lane change frequency, and turning movements by processing trajectory data obtained from the time trace of position estimates.
+        \item The accuracy of data measurements from VDS depends significantly on the camera's mounting height and location. Due to these variables, most manufacturers do not provide a confidence interval for their measurement accuracy specifications. \textcite{klein2017its} emphasizes the advantage of pairing a confidence interval with an accuracy specification.
+    \end{itemize}
+    \item \textbf{Presence detecting microwave radar sensor and Doppler microwave sensor:} Two types of microwave sensors are used in traffic management applications: presence detecting sensors and Doppler sensors. These active devices transmit energy and receive the portion scattered back into their antenna aperture, allowing them to detect vehicle presence and movement.
+    \begin{itemize}
+        \item The measurement outputs of the presence detecting microwave radar sensor include count, presence (using FMCW waveform), lane occupancy for both stopped and moving vehicles (with FMCW waveform), speed, range (with FMCW waveform), "pseudo" traffic density calculated from point data (with FMCW models), classification (based on length), and pedestrian detection.
+        \item The measurement outputs of the Doppler microwave sensor include count, lane occupancy for moving vehicles, and speed. The vehicle must be moving at a speed greater than a minimum established by the manufacturer (e.g., 3–11 km/h). Thus, Doppler microwave sensors may not be suitable for measuring vehicle speed under congested traffic conditions. However, with innovative algorithms, these sensors can infer the positions of slow-moving and stopped vehicles by tracking speed trends, making them potentially useful for queue estimation.
+        \item Radar detection is a stochastic process, the probability of a valid detection is specified through a detection probability, while the probability of a false detection event is specified through a false alarm probability. These parameters depend on the radar's design and data processing. Estimates of the accuracy, sensor reliability are documented by \textcite{middleton2000initial}, \textcite{middleton2009alternative}, \textcite{middleton2002vehicle}, \textcite{mohammed2015evaluating} and \textcite{yu2013performance}.
+    \end{itemize}
+    \item \textbf{Passive infrared (PIR) sensor:} A passive infrared (PIR) sensor detects energy from two sources, energy emitted by vehicles, road surfaces, and other objects in its field of view, and energy radiated by the cosmos, galaxy, and atmosphere that is reflected by these objects into the sensor aperture. The sensor itself transmits no energy, instead using an optical system to focus detected energy onto an infrared-sensitive material, which converts the energy into electrical signals analyzed in real time to determine vehicle presence, flow rates, speeds, and classes.
+    \begin{itemize}
+        \item The measurement outputs for passive infrared (PIR) sensors include count, presence, lane occupancy, speed with multiple-detection zone models, queue with multiple sensors or detection zones.
+        \item PIR sensors have several disadvantages, including sunlight glint causing unwanted signals, and atmospheric particulates and inclement weather (fog, haze, rain, snow) scattering and absorbing energy, leading to performance degradation. These effects are sensitive to water concentrations and other obscurants like smoke and dust. While not significant for short-range applications, undercounting in heavy rain and snow has been reported. However, no measurement noise distribution has been provided.
+    \end{itemize}
+    \item \textbf{LiDAR sensor:} Lidar sensors are active devices that use laser diodes operating in the near-infrared region (0.905 to 0.94 μm) to illuminate the roadway and detect reflected or scattered energy from vehicles. These sensors are mounted overhead or to the side of the roadway, with side-looking configurations providing coverage of additional lanes and enabling axle counting.
+    \begin{itemize}
+        \item The output of Lidar sensors includes count, presence, lane occupancy, speed, vehicle length, and vehicle classification. Some models utilize 2D and 3D imaging or axle counting, and others provide high-resolution imagery of intersections. These systems, using multiple lidars, scan entire intersections to detect and classify motorized vehicles, bicycles, and pedestrians, and notify traffic management personnel of turning movements and other pertinent information (\textcite{Taylor2022}).
+        \item Classification accuracy of some models are provided by SICK, a sensors manufacturer.
+    \end{itemize}
+    \item \textbf{Acoustic sensor:} Acoustic sensors used in traffic management are passive devices that do not transmit energy of their own. They measure vehicle passage, presence, and speed by detecting acoustic energy, or audible sounds, produced by vehicular traffic from sources such as engines and the interaction of tires with the road. When a vehicle enters the detection zone, the signal processing algorithm detects an increase in sound energy and generates a vehicle presence signal. When the vehicle exits the detection zone, the sound energy level drops below the detection threshold, terminating the vehicle presence signal.
+    \begin{itemize}
+        \item Measurement output includes count, presence, lane occupancy, and average speed for a selectable update period (1 to 220 seconds) using multiple detection zones or a data processing algorithm that assumes an average vehicle length.
+        \item Accuracy data for vehicle count and speed for the SmarTek SAS-1 Acoustic sensor is provided by \textcite{middleton2000initial}.
+    \end{itemize}
+    \item \textbf{Ultrasonic sensor:} Ultrasonic sensors are active sensors that transmit pressure waves of sound energy at a frequency between 25 and 50 kHz, which is above the human audible range. The most accurate data are obtained when the sensors are mounted over the center of the monitored lane. An alternate mounting location at the lane edge, especially if the monitored lane is the rightmost lane, is sometimes used. These sensors can also be mounted in a horizontal position when used as vehicle detection triggers, such as to prevent a barrier gate in a parking structure from closing on top of a vehicle.
+    \begin{itemize}
+        \item Measurement output includes count, presence, lane occupancy, speed with Doppler model or multiple detection-zone pulse model, range with pulse model, and queue with multiple single-zone pulse models.
+        \item Accuracy of ultrasonic sensors has not been extensively studied.
+    \end{itemize}    
+\end{enumerate}
+   
+Although the measurement noise distribution is not explicitly provided, \textcite{klein2024roadside} presents the accuracy characteristics of various sensors, including loop detectors, magnetic sensors, microwave radar sensors, LiDAR sensors, and acoustic sensors. Therefore, it is crucial to determine how to use this information to derive the necessary measurement noise distribution.
+
+
+\subsection{Floating Sensor (Lagrangian Sensor)}
+Floating sensors, including GPS-equipped probe vehicles, mobile phone GPS, connected vehicles, mobile sensors, and on-vehicle sensors, are increasingly being recognized for their potential in traffic monitoring and management. 
+
+\subsubsection{Global Positioning System (GPS)}\label{Global Positioning System (GPS)}
+The noise characteristics of GPS data have been extensively studied and documented, revealing that GPS errors are influenced by various factors such as atmospheric conditions, multipath effects, and satellite geometry. These errors are often temporally correlated, making the noise more complex than simple Gaussian noise. Horizontal errors in GPS measurements are typically smaller and more consistent, while vertical errors are generally larger and more variable.
+
+According to \textcite{early2020smoothing}, GPS position data can exhibit non-Gaussian noise, including outliers that can cause significant position jumps. Techniques such as smoothing splines and enhanced Kalman filters have been effective in addressing these issues by accurately modeling the noise characteristics. The Ornstein-Uhlenbeck noise model, in particular, has been shown to effectively represent the autocorrelated process noise in GPS data, outperforming traditional Kalman filters that assume Gaussian noise. \textcite{martin2020improving} suggests that latitude, longitude, and altitude data from GPS follow a Gaussian distribution with variances \(\sigma^2/\theta\), where \(\sigma\) and \(\theta\) are parameters derived from an Ornstein-Uhlenbeck (OU) process fitted to the data. In the absence of specific data, this thesis will assume a mean and variance for the Gaussian noise distribution of the GPS data based on typical values found in the literature. 
+
+
+
+
+
+
+The Global Positioning System (GPS) can be equipped on various platforms such as probe vehicles, connected vehicles, and mobile phones, typically providing data on time, location, speed, and vehicle ID. Connected vehicles offer additional capabilities by incorporating a range of perception sensors like radar and on-vehicle cameras. This setup enables the collection of rich information including the presence of predecessor and follower, acceleration rates, and the distance to nearby vehicles (i.e. the space to the predecessor or follower, the lateral space to the vehicles on the adjacent lane) (\textcite{comert2021queue}, \textcite{hu2022high}), as well as sampling travel times (\textcite{hao2014cycle}, \textcite{ban2011real}).
+
+\textcite{yin2018kalman} and \textcite{gao2019connected} have utilized mobile phone GPS data sourced from DIDI Chuxing, a taxi-hailing platform, to extract valuable information regarding location, time steps, vehicle ID, queue times, and speeds.
+
+Moreover, the level of market penetration (LMP) of floating data is a crucial aspect of research, as it can influence how estimation results are affected by measurement noise (\textcite{hu2022high}).
+
+\textcite{ban2011real} notes that opting to collect intersection travel times or delay samples, rather than detailed vehicle trajectories, can enhance privacy protection, provided that the data collection and sampling schemes are carefully designed. This approach is particularly relevant as the availability of mobile sensors increases and public concern regarding privacy grows. This methodological shift not only respects privacy but also leverages the widespread availability of advanced sensor technology to improve traffic data accuracy and utility.
+
+
+%Common use floating sensors include probe trajectory data (provides location, time, speed, vehicle ID of the probe vehicle), mobile phone GPS (location, time step, vehicle ID), connected vehicle (vehicle ID, location, speed, acceleration, whether there is follower of CV), mobile sensor (sample travel times), 
+
+%Both \textcite{hao2014cycle} and \textcite{ban2011real}, who focused on using sampled travel times, did not consider the effects of measurement noise in their analyses. In contrast, other studies have implemented various methods to manage the measurement noise associated with the location and speed data obtained from floating sensors.
+
+\textcite{wang2015cycle} utilized multiple data sources, including location and time from probe vehicles and vehicle counts from loop detectors, assuming a data deviation (location) of less than 3 meters. This approach highlights a method of integrating data from different sensors to enhance accuracy.
+
+\textcite{yin2018kalman}, \textcite{wang2021kalman}, \textcite{ferencz2023road}, \textcite{ramezani2015queue}, and \textcite{hu2022high} typically model measurement noise (location, speed, acceleration) from mobile phone GPS or connected vehicles (CV) as following a zero-mean Gaussian distribution. This assumption is common in traffic research as it simplifies the statistical treatment of noise.
+
+\textcite{aljamal2020real} took a dynamic approach by using an artificial neural network to estimate the mean and variance of the measurement noise for CV's location speed time-dependently. This method represents an adaptive strategy to account for potentially varying noise characteristics in real-time.
+
+\textcite{anusha2022dynamical} also modeled the mean and variance of measurement noise under different scenarios, including during lane changes, which can significantly alter the noise characteristics due to the dynamic nature of the maneuvers.
+
+Lastly, \textcite{comert2021queue} assumed lane-level accuracy for CV locations, suggesting a high confidence in the precision of CV data for lane-specific applications.
+
+These varied approaches demonstrate the evolving landscape of methodologies aimed at handling measurement noise in traffic data, each adapting to the particular needs and precision requirements of their specific traffic modeling contexts. Indeed, much of the research in queue estimation operates under the assumption that measurement noise follows a Gaussian distribution, with various studies experimenting with different mean values and variances. This methodical testing helps researchers determine optimal parameter values that enhance the accuracy and reliability of their models. By tweaking these parameters, they can better understand how different levels of assumed noise impact the estimation process and adjust their models to closely match the observed data, ultimately refining the quality and effectiveness of traffic management systems.
+
+
+\subsection{Summary}
+Through reviewing the literature, the thesis has gained insights into the measurement outputs from various detection technologies and the distribution of measurement noise. In alignment with the focus of the current thesis, the methodologies addressing measurement issues related to loop detectors and GPS (particularly location and speed data) are of paramount concern. The work of \textcite{xie2018generic}, which tackles errors related to vehicle accumulation, missed counts, and overcounts, alongside \textcite{aljamal2020real}'s approach to dynamically handling measurement noise distribution, has proven particularly enlightening. These studies not only inspire but also highlight existing research gaps.
+
+The proposed PF-SIQE emphasizes the use of connected vehicle data, making it essential to examine how different levels of market penetration (LMP) influence estimation accuracy. This aspect is especially pertinent with the expected rise in connected vehicle usage, which syncs with broader transportation trends and alleviates concerns about the variability in LMP impacting traffic data analysis. This forward-looking approach ensures that our estimator remains relevant and effective in the evolving landscape of traffic management.
+
+\section{Conclusion}\label{LR: Conclusion}
+After a comprehensive review of the literature on queue estimation and exploring traffic state estimation using the particle filter framework, it has become evident that the research gap and the primary contributions of the current thesis are as follows:
+
+\begin{itemize}
+\item Studying queue dynamics at signalized intersections at both macroscopic and vehicle-based levels, integrating microscopic traffic flow models into the particle filter framework, is not done in existing literature. This approach allows for a more granular analysis of traffic behaviors and interactions at intersections, enhancing the accuracy and relevancy of queue estimations. Addressing this gap is crucial for developing more precise and reliable traffic management strategies.
+\item Developing a decision-making model specifically for the dilemma zone during yellow light phases and incorporating this model into the state transition function in the particle filter framework. Existing studies often overlook the randomness and variability in driver behavior during these critical transition times. This model will address these gaps, providing a more nuanced understanding and prediction of queue dynamics, which is essential for improving intersection safety and efficiency.
+\item Creating a model to convert the output of loop detectors into a discrete probability distribution function based on product requirements. Current literature lacks sophisticated methods to interpret and utilize data from traditional traffic detection devices in a probabilistic framework. This conversion will facilitate a more sophisticated interpretation and utilization of data from traditional traffic detection devices, improving the integration of such data into modern traffic management systems, and enhancing the overall accuracy of traffic state estimation.
+\end{itemize}
+
+In addition to these contributions, it is important to benchmark the proposed PF-SIQE against existing queue estimation methods discussed in the literature. Although the methods may not be fully equivalent, comparing them in specific scenarios will provide valuable insights into the performance and advantages of the proposed approach. The choice of benchmarks and the detailed scenarios setup will be presented in Chapter \ref{chapter:Experimental Design and Analysis}.
+
+The next section will present the mathematical formulation of the proposed PF-SIQE, detailing the technical underpinnings that support these innovative approaches.

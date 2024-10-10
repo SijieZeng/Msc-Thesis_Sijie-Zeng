@@ -1,0 +1,62 @@
+\chapter{Summary of the list of Criteria}
+\label{appendix: Summary of the list of Criteria}
+
+This table provides a summary of key criteria that can be used to evaluate the performance of the PF-SIQE model and other estimation algorithms. These criteria are relevant for assessing the accuracy, robustness, and efficiency of the model in various traffic conditions, making them crucial for understanding the model's practical implications and identifying areas for future improvement.
+\section{Selecion of the Appropriate Evaluation Criteria}\label{Selecion of the Appropriate Evaluation Criteria}
+A performance evaluation framework requires the careful selection and definition of criteria to assess the PF-SIQE's performance. Appendix \ref{appendix: Summary of the list of Criteria} presents various criteria used in the evaluation of model performance. The selection of appropriate evaluation criteria is crucial and must align with the specific performance requirements. It is important to consider how the characteristics and advantages of each criterion match these requirements and why the disadvantages may be negligible in this context.
+
+The primary requirement for the PF-SIQE is to accurately estimate queue lengths at signalized intersections while effectively handling noisy measurements. Mean Absolute Error (MAE) offers a clear measure of the average magnitude of errors in estimations, which is directly pertinent to evaluating the accuracy of queue length estimates. Unlike Mean Squared Error (MSE), which can be disproportionately affected by large errors, MAE treats all errors equally. This is particularly important in traffic management systems where occasional large errors, due to sudden stops, accelerations, or atypical behavior, should not unduly influence performance evaluation. MAE is well-suited for such applications, as maintaining consistent accuracy is more critical than minimizing the effect of infrequent large deviations. Hence, this thesis selects MAE as the primary and overall criterion.
+
+
+
+
+High particle diversity is crucial for the PF-SIQE, as it enhances robustness and adaptability, allowing the filter to recover from incorrect estimations. This capability is essential in dynamic vehicular traffic systems, where states can change unpredictably. Therefore, studying particle diversity as an additional criterion is necessary. Particle diversity can be evaluated by calculating the effective number of particles, which is previously defined in Equation \ref{eq: effective number of particles}: $\widehat{N^{eff}} = \frac{1}{\sum_{j=1}^N ({w}_k^{j})^2}$. Where, \(\widehat{N^{eff}}\) represents the effective number of particles, and \({w}_k^{j}\) denotes the weight of the \(j\)-th particle at time step \(k\). When the effective number of particles falls below a certain threshold, resampling should be performed to maintain diversity and ensure accurate state representation.
+
+By selecting MAE as the primary criterion and Particle Diversity as a supplementary criterion, the evaluation framework aligns well with the specific performance requirements of the PF-SIQE. MAE ensures precise and robust queue length estimations, while Particle Diversity ensures the filter's adaptability and robustness to changing traffic conditions. These criteria together provide a comprehensive evaluation of the PF-SIQE's performance in real-world traffic management scenarios.
+\newgeometry{landscape, left=1cm, right=1cm, top=1.5cm, bottom=1.5cm}
+\begin{landscape}
+\begin{table}
+\centering
+\footnotesize 
+\caption{Summary of the list of Criteria}
+\label{Summary of the list of Criteria}
+% 为各列分配不同的相对宽度
+\begin{tabularx}{\linewidth}{@{} l 
+>{\hsize=1.2\hsize}X  
+>{\hsize=.8\hsize}X  
+>{\hsize=.9\hsize}X  
+>{\hsize=.9\hsize}X 
+>{\hsize=1.2\hsize}X 
+@{}} 
+\toprule
+\textbf{Criterion} & \textbf{Definition and Equation} & \textbf{Characteristics} & \textbf{Advantages} & \textbf{Disadvantages} & \textbf{Applicable Scene} \\ 
+\midrule
+\textbf{Mean Squared Error} & The average of the squares of the differences between the estimated and actual values. \newline
+\( \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 \) & Emphasizes larger errors due to squaring. & Sensitive to large errors, making it useful for applications where such errors are particularly undesirable. & Can be overly influenced by outliers. & Useful in tracking and navigation applications where minimizing large deviations is crucial. \\ 
+\midrule
+\textbf{Mean Absolute Error} & The average of the absolute differences between the estimated and actual values. \newline
+\( \text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i| \) & Provides a direct measure of error magnitude without emphasizing larger errors. & Less sensitive to outliers than MSE. & May not adequately penalize larger errors. & Effective in economic forecasting where outliers can be common but large errors are not disproportionately penalized. \\ 
+\midrule
+\textbf{Root Mean Squared Error} & The square root of MSE. \newline
+\( \text{RMSE} = \sqrt{\text{MSE}} \) & Balances between the magnitude of errors and their frequency. & More interpretable in terms of error magnitude than MSE. & Still sensitive to outliers. & Useful in energy demand forecasting, where error magnitude in predictions can have significant implications. \\ 
+\midrule
+\textbf{Maximum Absolute Error} & The largest absolute difference between the estimated and actual values. \newline
+\( \text{Max Error} = \max(|y_i - \hat{y}_i|) \) & Indicates the worst-case error. & Useful for understanding the maximum possible error. & Does not provide information about typical errors. & Important in safety-critical applications, such as autonomous driving, where the worst-case scenario needs to be minimized. \\ 
+\midrule
+\textbf{Coverage Probability} & The probability that the true value falls within a specified confidence interval around the estimated value. & Measures the reliability of the confidence intervals. & Directly relates to the confidence one can have in the predictions. & Can be difficult to compute for non-linear models. & Valuable in statistical weather forecasting where providing reliable confidence intervals is as important as the predictions themselves. \\ 
+\midrule
+\textbf{Particle Diversity} & A measure of how spread out or varied the particles are in a particle filter. High diversity means the particles cover a wide range of the state space. & Indicates the ability of a particle filter to explore and represent the state space effectively. & Ensures that the filter can adapt to changes in the system dynamics and can recover from incorrect estimations. & Maintaining high diversity can be challenging, especially after resampling steps, which might lead to particle depletion. & Crucial in dynamic environments where the system's state can change unpredictably, such as in robotics navigation and tracking moving objects. \\ 
+\midrule
+\textbf{Cramer-Rao Lower Bound} & A theoretical lower bound on the variance of unbiased estimators. It provides a measure of the best possible accuracy that any unbiased estimator can achieve for a given parameter. %\newline
+\( \text{Var}(\hat{\theta}) \geq \frac{1}{I(\theta)} \) & Serves as a benchmark to evaluate the efficiency of estimators. An estimator is considered efficient if it reaches the CRLB. & Offers a way to understand the inherent limitations in estimating a parameter and to assess the performance of estimators. & Applicable only to unbiased estimators and requires knowledge of the true parameter values, which may not always be available or clearly defined. & Useful in signal processing and communications, where it is important to evaluate the theoretical limits of system performance. \\ 
+\bottomrule
+\end{tabularx}
+\end{table}
+\end{landscape}
+\restoregeometry
+
+
+
+
+
+

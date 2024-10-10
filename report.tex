@@ -1,0 +1,173 @@
+\documentclass[12pt, a4paper, margin=1in]{tudelft-report}
+%\usepackage[utf8]{inputenc}
+\usepackage{newtxtext}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\usepackage{lscape}
+\usepackage{pdflscape}
+\usepackage{longtable}
+\usepackage{rotating} % 用于表格旋转
+\usepackage{tabularx} % 用于自动换行和宽度自动调整的表格
+\usepackage{booktabs} % 优化表格线条
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{afterpage}
+\usepackage{parskip}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{makecell}
+%\usepackage[table,xcdraw]{xcolor}
+%\usepackage{colortbl}
+\graphicspath{{figures/}}
+\newcommand\VERYHuge{\fontsize{120}{100}\selectfont} 
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+%% Set up the bibliography
+\usepackage[backend=biber, style=authoryear, labelnumber, maxcitenames=1, mincitenames=1, uniquelist=false, uniquename=false]{biblatex}
+\addbibresource{report.bib}  % 确保使用正确的文件名
+
+\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
+
+\defbibenvironment{bibliography}
+  {\list
+     {\printtext[labelnumberwidth]{\printfield{labelnumber}}}
+     {\setlength{\labelwidth}{\labelnumberwidth}%
+      \setlength{\leftmargin}{\labelwidth}%
+      \setlength{\labelsep}{\biblabelsep}%
+      \addtolength{\leftmargin}{\labelsep}%
+      \setlength{\itemsep}{\bibitemsep}%
+      \setlength{\parsep}{\bibparsep}}%
+      \renewcommand*{\makelabel}[1]{##1\hss}}
+  {\endlist}
+  {\item}
+
+% 在所有其他宏包之后加载 hyperref
+\usepackage{hyperref}
+
+%% Additional packages and commands
+
+\setlist{itemsep=-2pt} % Reducing white space in lists slightly
+\renewcommand{\deg}{\si{\degree}\xspace} % Use \deg easily, everywhere
+
+%\url{https://dzwaneveld.github.io/report/} for the full documentation.}
+%% ----------------------------------------------------------------------
+%%    Begin of document + Frontmatter (Roman page numbering)
+%% ----------------------------------------------------------------------
+\titlespacing*{\chapter}{0pt}{50pt}{40pt}
+
+\titlespacing*{\section}{0pt}{12pt}{10pt}
+
+\titleformat{\chapter}[block] % 使用block而非display来允许编号后换行
+{\normalfont\huge\bfseries\filleft} % 右对齐且使用huge大小的粗体
+{\VERYHuge\thechapter} 
+% 章节编号
+{1em} % 编号与标题文本之间的水平距离
+{\\[20pt]} % 在编号和标题文本之间换行
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+  
+\begin{document}
+\setstretch{1.3}
+
+\frontmatter
+
+%% Define the main parameters
+\title{\textbf{A particle filter approach for real-time queue length estimation}}
+\subtitle{CIE 5060-09: Msc Thesis}
+\author{Sijie Zeng}
+
+%\subject{CIE 5060-09: Msc Thesis} % Cover only
+\affiliation{Delft University of Technology} % Cover only
+\coverimage{cover.jpg} % Aspect ratio of 2:3 (portrait) recommended
+\definecolor{title}{HTML}{4884d6} % Color for cover title
+
+\makecover
+\afterpage{\blankpage}
+\input{frontmatter/title-report}
+\afterpage{\blankpage}
+\input{frontmatter/preface}
+\afterpage{\blankpage}
+\input{frontmatter/abstract}
+
+\tableofcontents
+\afterpage{\blankpage}
+%\listoffigures
+%\afterpage{\blankpage}
+%\listoftables
+%\afterpage{\blankpage}
+%\listofalgorithms
+%\afterpage{\blankpage}
+
+\input{frontmatter/nomenclature}
+
+%% ----------------------------------------------------------------------
+%%    Mainmatter (Arabic page numbering)
+%% ----------------------------------------------------------------------
+
+\mainmatter
+
+\input{mainmatter/chapter-1}
+\afterpage{\blankpage}
+\input{mainmatter/chapter-2}
+\afterpage{\blankpage}
+\input{mainmatter/chapter-3}
+\afterpage{\blankpage}
+\input{mainmatter/chapter-4} 
+\afterpage{\blankpage}
+\input{mainmatter/chapter-5}
+\afterpage{\blankpage}
+
+
+%% Prevent urls running into margins in bibliography
+\setcounter{biburlnumpenalty}{7000}
+\setcounter{biburllcpenalty}{7000}
+\setcounter{biburlucpenalty}{7000}
+
+%% Add bibliography
+
+\printbibliography[heading=bibintoc,title=References]
+
+%% ----------------------------------------------------------------------
+%%    Appendix (Letters for chapters)
+%% ----------------------------------------------------------------------
+
+\appendix
+
+\input{appendix/appendix-a}% performance criteria
+%\input{appendix/appendix-b}% task division
+%\input{appendix/appendix-c} % Create file to add
+
+\end{document}

@@ -1,0 +1,126 @@
+\chapter*{Nomenclature}
+\addcontentsline{toc}{chapter}{Nomenclature}
+
+\emph{This section contains comprehensive tables of all abbreviations and symbols utilized throughout the thesis.}
+
+\section*{Abbreviations}
+
+\begin{longtable}{p{2.5cm}p{8cm}}
+    \toprule
+    Abbreviation & Definition \\
+    \midrule\endhead % Add abbreviations alphabetically here:
+    PF-SIQE & Particle Filter-Based Signalized Intersection Queue Estimator \\
+    IDM & Intelligence Driver Model\\
+    CV & Connected vehicles\\
+    RV& Regular vehicles\\
+    \bottomrule
+\end{longtable}
+
+\section*{Symbols}
+\begin{longtable}{p{2.5cm}p{10cm}p{2.5cm}}
+    \toprule
+    Symbol & Definition & Unit \\
+    \midrule\endhead % Add Latin symbols alphabetically here:
+    $k$ & time step index & $k = 1, 2, ...$ \\
+    $T$ & time step & s \\
+    $i$ & vehicle index & - \\
+    $j$ & particle index & - \\
+    \toprule
+    \textbf{PF Algorithm}  & Definition & Unit \\
+    \midrule
+    $p(x_k | x_{k-1})$ & probability distribution of the state at time step $k$ given the state at time step $k-1$ & - \\
+    $p(z_k^{i} | x_k^{i})$ & likelihood function of observing $z_k^{i}$ given the state $x_k^{i}$, it represents how probable the new measurement is for each possible state of the system  & - \\
+    $q(x|x_{k-1}^{i},z_k^i)$ & importance density & - \\
+    $z_k$  &  measurement of all the vehicles at time step $k$ & - \\
+    $w_k^{j}$ & weight or mass of $j^{th}$ particle at time step $k$ & - \\
+    \toprule
+    \textbf{State}  & Definition & Unit \\
+    \midrule
+    $x_k$ & system state & - \\
+    $d_k^i$  & longitudinal position of the $i^{th}$ vehicle & m \\
+    $v_k^i$  & instantaneous speed of the $i^{th}$ vehicle & m/s \\
+    $a_k^i$  & instantaneous acceleration rate of the $i^{th}$ vehicle & m/s$^2$ \\
+    $D_{k}^i$ & decision of stop or go of the $i^{th}$ vehicle & - \\
+    $i_k^{\text{lane}}$ & the index number of which lane the vehicle is & -\\
+    $n_k^\text{s}$  & state noise at time step $k$ & m/s$^2$ \\
+    $\Delta v_k^i$ & relative speed to the predecessor of the $i^{th}$ vehicle & m/s \\
+    $\bar a_k^i$  & instantaneous acceleration rate involving car-following model of the $i^{th}$ vehicle & m/s$^2$ \\
+    $s_k^i$ & current gap to the predecessor of the $i^{th}$ vehicle & m \\
+    $s_k^{i,*}(v_k^i, \Delta v_k^i)$ & desired gap of the $i^{th}$ vehicle & m \\
+    $d_{a,k}^i$ & dilemma zone downstream boundary of the $i^{th}$ vehicle & m\\
+    $T_k$ & the remaining yellow time of the yellow signal & s\\
+    $T_{\text{elapsed},k}$ & the elapsed yellow time of the yellow signal & s\\
+    $d_{b,k}^i$ & dilemma zone upstream boundary of the $i^{th}$ vehicle & m \\
+    $\tilde a_k^i$  & instantaneous acceleration rate involving traffic signal status of the $i^{th}$ vehicle & m/s$^2$ \\
+    $S_{k}$ & signal status ($S_{\text{red}}$, $S_{\text{green}}$, $S_{\text{yellow}}$) of the $k$ time step & - \\
+    $C_{s,k}$ & number of required time steps for the vehicle to fully stop at the stop line & - \\
+    $T$ & discrete time step & s \\
+    $n_k^{a,i}$ & acceleration noise at time step $k$ of the $i^{th}$ vehicle, $n_k^\text{a} \sim \mathcal{U}[-\frac{v_k}{T}n^\text{a}, n^\text{a}]$ & m/s$^2$ \\
+    $n_k^{d,i}$ & decision-making noise at time step $k$ of the $i^{th}$ vehicle & - \\
+    $p^i(a_{k+1} | a_{k})$ & probability distribution of the acceleration noise at time step $k+1$ given the acceleration at time step $k$ of the $i^{th}$ vehicle & - \\
+    $p^i(D_{k+1} | D_{k})$ & probability distribution of the decision-making noise at time step $k+1$ given the decision at time step $k$ of the $i^{th}$ vehicle & - \\
+    $p(x_{k+1} | x_{k})$ & probability distribution of the state noise at time step $k+1$ given the state at time step $k$ & - \\
+    \toprule
+    \textbf{Measurement}  & Definition & Unit \\
+    \midrule
+    $z_k$ & measurement & - \\
+    $n_k^\text{m}$  & measurement noise term& - \\
+    $\tilde d_k^i$ & observed longitudinal position of the $i^{th}$ vehicle from in-car GPS at time step $k$ & m \\
+    $c_k$ & vehicle count, i.e. number of vehicles passing loop 1 at time step $k$ & -\\
+    $\tilde c_k$ &  observed vehicle count, i.e. number of vehicles passing loop 1 at time step $k$ & -\\
+    $ o_k$ & vehicle presence from loop 2 at time step $k$ & 0/1 \\
+    $\tilde o_k$ & observed vehicle presence from loop 2 at time step $k$ & 0/1 \\
+    $ v_k$ & average vehicle speed from loop 3 at time step $k$ & m/s\\
+    $\tilde v_k$ &observed average vehicle speed from loop 3 at time step $k$ & m/s\\
+    $n_k^{\text{GPS},i}$ & GPS noise at time step $k$ of the $i^{th}$ vehicle: $n_k^{\text{GPS},i} \sim \mathcal{N}(d_k^i, {\sigma_\text{GPS}}^2) $  & m\\ 
+    $n_k^\text{loop 1}$ & vehicle count noise at time step $k$ of loop 1: \( n_k^\text{loop 1} \sim \mathcal{N}(c_k, (10.2 \times \sqrt{\frac{c_k}{1,000}})^2) \) & -\\ 
+    $n_k^\text{loop 2}$& vehicle presence noise at time step $k$ of loop 2 & -\\
+    $n_k^\text{loop 3}$& vehicle speed noise at time step $k$ of loop 3 & m/s\\
+    $p^\text{loop 1}(\tilde c_k | c_{k})$ & probability distribution of the observed vehicle count noise at time step $k$ given the true vehicle count of loop 1 & - \\
+    $p^\text{loop 2}(\tilde o_k | o_{k})$ & probability distribution of the observed vehicle presence noise at time step $k$ given the true vehicle presence of loop 2 & - \\
+    $p^\text{loop 3}(\tilde v_k | v_{k})$ & probability distribution of the observed vehicle average speed noise at time step $k$ given the true vehicle average speed of loop 3 & - \\
+    $p(z_k^\text{loop}| x_k)$ & probability distribution of the loop measurement noise at time step $k$ given the state at time step $k$ & - \\
+    $p^\text{GPS}(\tilde d_k^i | d_k^i)$ & probability distribution of the observed vehicle position noise at time step $k$ given the true vehicle position of the $i^{th}$ vehicle & - \\
+    $p(z_k^\text{GPS}| x_k)$ & probability distribution of the GPS measurement noise at time step $k$ given the state at time step $k$ & - \\
+    $p(z_k | x_{k})$ & probability distribution of the measurement noise at time step $k$ given the state at time step $k$ & - \\
+    \toprule
+    \textbf{Estimation}  & Definition & Unit \\
+    \midrule
+    $\hat{e}_k^i$ & state estimates & - \\
+    $\hat d_k^i$  & estimated longitudinal position of the $i^{th}$ vehicle & m \\
+    $\hat v_k^i$  & estimated instantaneous speed of the $i^{th}$ vehicle & m/s \\
+    $\hat a_k^i$  & estimated instantaneous acceleration rate of the $i^{th}$ vehicle & m/s$^2$ \\
+    $\hat D_{k}^i$ & estimated decision of stop or go of the $i^{th}$ vehicle & - \\
+    $\hat n_k$ & estimated number of vehicles that below a certain speed at time step $k$ & - \\
+    \bottomrule
+\end{longtable}
+
+\section*{Parameters}
+\begin{longtable}{p{2.5cm}p{10cm}p{2.5cm}}
+    \toprule
+    parameters  & Definition & Tunable, Unit \\
+    \midrule\endhead % Add Latin symbols alphabetically here:
+    $v_{\text{desired}}$ & desired speed approaching the traffic signal & 15 m/s \\
+    $a_{\text{max}}$ &  maximum acceleration rate  &  1 m/s$^2$ \\
+    $\delta$ & the free flow exponent & 4 \\
+    $s_0$ & minimum gap & 2.0 m \\
+    $h_s$ & safe time headway  & 1.0 s \\
+    $b$ & comfortable deceleration rate & 1.5 m/s$^2$ \\
+    $d_0$ & the upstream boundary of the study area & 0 m\\
+    $D_h$ & the upstream boundary of the decision-making process  & 150 m \\
+    $d_\text{stop line}$ & the downstream boundary of the decision-making process & 300 m\\
+    $T_{\text{yellow}}$ & total yellow time  & 3.5 s \\
+    $T_{\text{green}}$ & total green time  & 20 s \\
+    $T_{\text{red}}$ & total red time  & 20 s \\
+    $T_{\text{reaction}}$  & braking reaction time  & 1.0 s \\
+    $a'$ & comfortable acceleration rate & 1.0 m/s$^2$ \\
+    $p_\text{stop}$ & probability that the vehicle chooses to stop within the dilemma zone & - \\
+    $n^a$ & acceleration noise parameter & m/s$^2$ \\
+    $d^\text{loop 1}$ & position of loop 1& m \\
+    $d^\text{loop 2}$ & position of loop 2& m \\
+    $p^\text{loop 2}$ & accuracy of loop 2 & - \\
+    $d^\text{loop 3}$ & position of loop 3& m \\
+    $\sigma_\text{GPS}$ &  standard deviation & 3 $\sim$ 10 m\\
+    $v_\text{threshold}$ & threshold speed used to differentiate between stationary and moving vehicles & m/s\\
+    \bottomrule
+\end{longtable}

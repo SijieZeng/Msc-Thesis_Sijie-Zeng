@@ -1,0 +1,14 @@
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+\emph{}
+
+Urban traffic congestion, particularly at signalized intersections, poses a critical challenge for modern transportation systems, driving the need for real-time, high-resolution solutions. This thesis presents the Particle Filter-Based Signalized Intersection Queue Estimator (PF-SIQE), a novel and flexible framework designed to estimate vehicle queues at signalized intersections in real-time. Unlike existing models that rely on macroscopic metrics such as traffic flow and density, the PF-SIQE operates at a microscopic level, estimating individual vehicle dynamics including position, velocity, acceleration, and decision-making behavior.
+
+A key innovation of the PF-SIQE is its ability to perform second-by-second vehicle queue estimations, offering a finer resolution compared to the cycle-by-cycle approach typically used in traditional models. The framework leverages a particle filter approach, allowing it to handle non-Gaussian noise distributions that better reflect real-world traffic conditions than the Gaussian assumptions employed in conventional Kalman filter-based models. Additionally, a novel traffic light decision model is introduced to capture acceleration and deceleration behaviors, particularly in dilemma zones encountered during signal transitions.
+
+The model is designed with modularity and scalability, using real-time data from loop detectors embedded in the road surface. A key contribution of this thesis is the development of a tailored noise probability distribution specifically for loop detectors, which enhances state estimation accuracy. Moreover, the PF-SIQE can be extended to integrate vehicle-based data sources such as GPS, CAN-bus, or navigation data, improving its applicability for future intelligent transportation systems (ITS).
+
+Preliminary validation of the PF-SIQE demonstrates its potential for accurate real-time queue estimation under varying traffic conditions. However, further comprehensive testing is required to fully validate the model’s performance. The research concludes with potential applications in Vehicle-Road Collaboration (V2I/I2V), adaptive traffic signal control, and Green Light Optimal Speed Advisory (GLOSA) systems, as well as opportunities for future research, including the incorporation of lateral vehicle dynamics and alternative resampling techniques for particle filters.
+
+
